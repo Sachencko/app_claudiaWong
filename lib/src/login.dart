@@ -1,12 +1,9 @@
 import 'dart:ui';
-import 'package:claudia_wong_app/src/main.dart';
 import 'package:claudia_wong_app/src/pantallaPrincipal.dart';
+import 'package:claudia_wong_app/src/pantallaPrincipalAdmin.dart';
 import 'package:claudia_wong_app/src/registro.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'firebase_options.dart';
 
 class Login extends StatefulWidget {
   Login({super.key});
@@ -30,9 +27,10 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final double topPadding = _selectedRole == 'Usuario' ? 180 : 220;
+    final double topPadding = _selectedRole == 'Usuario' ? 180 : 115;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned.fill(
@@ -44,6 +42,10 @@ class _LoginState extends State<Login> {
               child: Container(color: Colors.black.withOpacity(0.2)),
             ),
           ),
+          Container(
+            padding: EdgeInsets.all(50),
+            child: Image.asset("assets/claudiaLogin.png"),
+          ),
           Align(
             alignment: Alignment.center,
             child: Padding(
@@ -51,17 +53,16 @@ class _LoginState extends State<Login> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+
                   Container(
                     width: 315,
                     child: TextField(
+                      cursorColor: Color.fromARGB(255, 248, 200, 40),
                       controller: usuarioController,
                       keyboardType: TextInputType.name,
                       decoration: const InputDecoration(
                         filled: true,
                         fillColor: Colors.black,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
                         labelText: "Escribir usuario",
                         labelStyle: TextStyle(
                           color: Colors.white,
@@ -75,22 +76,35 @@ class _LoginState extends State<Login> {
                           ),
                           borderSide: BorderSide(color: Colors.white, width: 2),
                         ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(50),
+                            right: Radius.circular(50),
+                          ),
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(50),
+                            right: Radius.circular(50),
+                          ),
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
                       ),
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 30),
+
                   Container(
                     width: 315,
                     child: TextField(
+                      cursorColor: Color.fromARGB(255, 248, 200, 40),
                       controller: correoController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         filled: true,
                         fillColor: Colors.black,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
                         labelText: "Escribir correo",
                         labelStyle: TextStyle(
                           color: Colors.white,
@@ -98,6 +112,20 @@ class _LoginState extends State<Login> {
                         ),
                         contentPadding: EdgeInsets.only(left: 25),
                         enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(50),
+                            right: Radius.circular(50),
+                          ),
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(50),
+                            right: Radius.circular(50),
+                          ),
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
+                        border: OutlineInputBorder(
                           borderRadius: BorderRadius.horizontal(
                             left: Radius.circular(50),
                             right: Radius.circular(50),
@@ -112,15 +140,13 @@ class _LoginState extends State<Login> {
                   Container(
                     width: 315,
                     child: TextField(
+                      cursorColor: Color.fromARGB(255, 248, 200, 40),
                       controller: passController,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.black,
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
                         labelText: "Escribe contraseña",
                         labelStyle: const TextStyle(
                           color: Colors.white,
@@ -128,6 +154,20 @@ class _LoginState extends State<Login> {
                         ),
                         contentPadding: const EdgeInsets.only(left: 25),
                         enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(50),
+                            right: Radius.circular(50),
+                          ),
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(50),
+                            right: Radius.circular(50),
+                          ),
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
+                        border: const OutlineInputBorder(
                           borderRadius: BorderRadius.horizontal(
                             left: Radius.circular(50),
                             right: Radius.circular(50),
@@ -151,6 +191,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   const SizedBox(height: 30),
+
                   Container(
                     width: 315,
                     padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -166,18 +207,23 @@ class _LoginState extends State<Login> {
                           color: Colors.white,
                         ),
                         dropdownColor: const Color(0xFF424242),
-                        items:
-                            ['Usuario', 'Admin']
-                                .map(
-                                  (role) => DropdownMenuItem<String>(
-                                    value: role,
-                                    child: Text(
+                        items: ['Usuario', 'Cuenta de administrador']
+                            .map(
+                              (role) => DropdownMenuItem<String>(
+                                value: role,
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.person, color: Colors.white),
+                                    const SizedBox(width: 8),
+                                    Text(
                                       role,
                                       style: TextStyle(color: Colors.white),
                                     ),
-                                  ),
-                                )
-                                .toList(),
+                                  ],
+                                ),
+                              ),
+                            )
+                            .toList(),
                         onChanged: (value) {
                           setState(() {
                             _selectedRole = value!;
@@ -187,11 +233,13 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   const SizedBox(height: 30),
+
                   Container(
                     width: 315,
                     child: Divider(color: Colors.white70, thickness: 1),
                   ),
                   const SizedBox(height: 30),
+
                   SizedBox(
                     width: 315,
                     height: 50,
@@ -204,47 +252,81 @@ class _LoginState extends State<Login> {
                         if (usuario.isEmpty || correo.isEmpty || pass.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
+                              backgroundColor: Colors.grey,
                               content: Text(
-                                'Por favor complpeta todos los campos'
+                                'Por favor completa todos los campos',
+                                style: TextStyle(fontSize: 18),
                               ),
                             ),
                           );
                           return;
                         }
-                        try {
-                          QuerySnapshot snapshot =
-                              await FirebaseFirestore.instance
-                                  .collection('usuario')
-                                  .where('usuario', isEqualTo: usuario)
-                                  .where('correo', isEqualTo: correo)
-                                  .where('contraseña', isEqualTo: pass)
-                                  .get();
 
-                          if (snapshot.docs.isNotEmpty) {
-                            // Usuario válido, ir a pantalla principal
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => pantallaPrincipal(),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Datos incorrectos o usuario no registrado',
+                        try {
+                          if (_selectedRole == 'Cuenta de administrador') {
+                            // Busca solo en colección 'administradores'
+                            QuerySnapshot adminSnapshot = await FirebaseFirestore.instance
+                                .collection('administrador')
+                                .where('usuario', isEqualTo: usuario)
+                                .where('correo', isEqualTo: correo)
+                                .where('contraseña', isEqualTo: pass)
+                                .get();
+
+                            if (adminSnapshot.docs.isNotEmpty) {
+                              // Si el login es válido para administrador, navega a la pantalla de usuario normal
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => pantallaPrincipalAdmin(usuario: usuario),
                                 ),
-                              ),
-                            );
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                    'Administrador no registrado',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              );
+                            }
+                          } else {
+                            // Para usuarios normales, busca en colección 'usuario'
+                            QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+                                .collection('usuario')
+                                .where('usuario', isEqualTo: usuario)
+                                .where('correo', isEqualTo: correo)
+                                .where('contraseña', isEqualTo: pass)
+                                .get();
+
+                            if (userSnapshot.docs.isNotEmpty) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => pantallaPrincipal(usuario: usuario),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                    'Usuario no registrado',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              );
+                            }
                           }
                         } catch (e) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text('ERROR')));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('ERROR: $e')),
+                          );
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 240, 211, 51),
+                        backgroundColor: Color.fromARGB(255, 248, 200, 40),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
@@ -255,6 +337,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
+
                   if (_selectedRole == 'Usuario') ...[
                     const SizedBox(height: 15),
                     SizedBox(
@@ -266,10 +349,8 @@ class _LoginState extends State<Login> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => Registro(),
-                            ), //AL MOMENTO DE LOGEARSE
+                            ),
                           );
-                          //ESCRIBEEEEEEEEEEEEEEEEEEEEEE
-                          // Acción de registro
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey[800],

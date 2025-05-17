@@ -4,15 +4,15 @@ import 'package:claudia_wong_app/src/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class pantallaPrincipal extends StatefulWidget {
+class pantallaPrincipalAdmin extends StatefulWidget {
   final String usuario;
-  const pantallaPrincipal({super.key, required this.usuario});
+  const pantallaPrincipalAdmin({super.key, required this.usuario});
 
   @override
   _NavegadorState createState() => _NavegadorState();
 }
 
-class _NavegadorState extends State<pantallaPrincipal> {
+class _NavegadorState extends State<pantallaPrincipalAdmin> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [];
@@ -37,7 +37,7 @@ void initState() {
         child: Container(
           decoration: 
           const BoxDecoration(color: 
-          Color.fromARGB(255, 255, 255, 255),
+          Color.fromARGB(255, 114, 114, 114),
           boxShadow: [
             BoxShadow(
               color: Colors.black,
@@ -147,25 +147,13 @@ class Screen1 extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(10),
-        child: Text('Bienvenido ${usuario}', 
+        child: Text('Admin: ${usuario}', 
 
         style: TextStyle(
+          color: Colors.green,
           fontSize: 19,
           fontWeight: FontWeight.w500,
         )),
-      ),
-      floatingActionButton: SizedBox(
-        width: 65,
-        height: 65,
-        child: FloatingActionButton(
-        onPressed: (){
-
-        },
-        backgroundColor: Colors.black,
-        child: Icon(
-          color: Colors.white,
-          Icons.add),
-        )
       ),
     );
   }

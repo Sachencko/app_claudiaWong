@@ -1,11 +1,7 @@
 import 'dart:ui';
 import 'package:claudia_wong_app/src/login.dart';
-import 'package:claudia_wong_app/src/registro.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'firebase_options.dart';
 
 class Registro extends StatelessWidget {
   Registro({super.key});
@@ -20,6 +16,7 @@ class Registro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned.fill(
@@ -28,13 +25,11 @@ class Registro extends StatelessWidget {
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-              child: Container(
-                color: const Color.fromARGB(255, 255, 0, 0).withOpacity(0.2),
-              ),
+              child: Container(),
             ),
           ),
           Positioned(
-            top: 40, // puedes ajustar según lo que necesites
+            top: 40,
             left: 10,
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
@@ -53,194 +48,17 @@ class Registro extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 315,
-                    child: TextField(
-                      controller: nombreController, //CONTROLADOR
-                      keyboardType: TextInputType.name,
-                      decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Colors.black,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        labelText: "Nombre",
-                        labelStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                        contentPadding: EdgeInsets.only(left: 25),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.horizontal(
-                            left: Radius.circular(50),
-                            right: Radius.circular(50),
-                          ),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
+                  _buildTextField(nombreController, "Nombre", TextInputType.name),
                   const SizedBox(height: 30),
-                  Container(
-                    width: 315,
-                    child: TextField(
-                      controller: apellidoController, //CONTROLADOR
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.black,
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        labelText: "Apellido",
-                        labelStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                        contentPadding: const EdgeInsets.only(left: 25),
-                        enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.horizontal(
-                            left: Radius.circular(50),
-                            right: Radius.circular(50),
-                          ),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
+                  _buildTextField(apellidoController, "Apellido", TextInputType.name),
                   const SizedBox(height: 30),
-                  Container(
-                    width: 315,
-                    child: TextField(
-                      controller: usuarioController, //CONTROLADOR
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.black,
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        labelText: "Usuario",
-                        labelStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                        contentPadding: const EdgeInsets.only(left: 25),
-                        enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.horizontal(
-                            left: Radius.circular(50),
-                            right: Radius.circular(50),
-                          ),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
+                  _buildTextField(usuarioController, "Usuario", TextInputType.name),
                   const SizedBox(height: 30),
-                  Container(
-                    width: 315,
-                    child: TextField(
-                      controller: correoController, //CONTROLADOR
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.black,
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        labelText: "Correo",
-                        labelStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                        contentPadding: const EdgeInsets.only(left: 25),
-                        enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.horizontal(
-                            left: Radius.circular(50),
-                            right: Radius.circular(50),
-                          ),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
+                  _buildTextField(correoController, "Correo", TextInputType.emailAddress),
                   const SizedBox(height: 30),
-                  Container(
-                    width: 315,
-                    child: TextField(
-                      controller: passController, //CONTROLADOR
-                      keyboardType: TextInputType.visiblePassword,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.black,
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        labelText: "Contraseña",
-                        labelStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                        contentPadding: const EdgeInsets.only(left: 25),
-                        enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.horizontal(
-                            left: Radius.circular(50),
-                            right: Radius.circular(50),
-                          ),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
+                  _buildTextField(passController, "Contraseña", TextInputType.visiblePassword),
                   const SizedBox(height: 30),
-                  Container(
-                    width: 315,
-                    child: TextField(
-                      controller: telController, //CONTROLADOR
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.black,
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        labelText: "Telefono",
-                        labelStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                        contentPadding: const EdgeInsets.only(left: 25),
-                        enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.horizontal(
-                            left: Radius.circular(50),
-                            right: Radius.circular(50),
-                          ),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
+                  _buildTextField(telController, "Telefono", TextInputType.phone),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: 315,
@@ -254,22 +72,6 @@ class Registro extends StatelessWidget {
                         String pass = passController.text.trim();
                         String telefono = telController.text.trim();
 
-                        //CAMPOS VACIOS
-                        if (nombre.isEmpty &&
-                            apellido.isEmpty &&
-                            usuario.isEmpty &&
-                            correo.isEmpty &&
-                            pass.isEmpty &&
-                            telefono.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Debe llenar todos los campos."),
-                              backgroundColor: Colors.grey,
-                              duration: Duration(seconds: 3),
-                            ),
-                          );
-                          return;
-                        }
                         if (nombre.isEmpty ||
                             apellido.isEmpty ||
                             usuario.isEmpty ||
@@ -278,9 +80,7 @@ class Registro extends StatelessWidget {
                             telefono.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text(
-                                "Todos los campos deben estar completos.",
-                              ),
+                              content: Text("Todos los campos deben estar completos", style: TextStyle(fontSize: 18)),
                               backgroundColor: Colors.grey,
                               duration: Duration(seconds: 3),
                             ),
@@ -288,13 +88,11 @@ class Registro extends StatelessWidget {
                           return;
                         }
 
-                        //NUMEROS
-                        if (!RegExp(r'^[0-9]+$').hasMatch(telefono)) {
+                        // Validar que nombre y apellido no tengan números
+                        if (RegExp(r'[0-9]').hasMatch(nombre)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text(
-                                "El campo teléfono solo debe contener números.",
-                              ),
+                              content: Text("El nombre no puede contener números", style: TextStyle(fontSize: 18)),
                               backgroundColor: Colors.grey,
                               duration: Duration(seconds: 3),
                             ),
@@ -302,13 +100,34 @@ class Registro extends StatelessWidget {
                           return;
                         }
 
-                        //@
-                        if (!correo.contains('@')) {
+                        if (RegExp(r'[0-9]').hasMatch(apellido)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text(
-                                "Ingrese un correo válido con '@'.",
-                              ),
+                              content: Text("El apellido no puede contener números", style: TextStyle(fontSize: 18)),
+                              backgroundColor: Colors.grey,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                          return;
+                        }
+
+                        // Validar correo con @ y un dominio (.com, .net, etc)
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(correo)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("El correo no es correcto", style: TextStyle(fontSize: 18)),
+                              backgroundColor: Colors.grey,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                          return;
+                        }
+
+                        // Validar teléfono: solo números y exactamente 9 dígitos
+                        if (!RegExp(r'^[0-9]{9}$').hasMatch(telefono)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("El teléfono debe tener 9 dígitos numéricos", style: TextStyle(fontSize: 18)),
                               backgroundColor: Colors.grey,
                               duration: Duration(seconds: 3),
                             ),
@@ -317,20 +136,14 @@ class Registro extends StatelessWidget {
                         }
 
                         try {
-                          CollectionReference collRef = FirebaseFirestore
-                              .instance
-                              .collection('usuario');
+                          CollectionReference collRef = FirebaseFirestore.instance.collection('usuario');
 
-                          // Verificar si ya existe un usuario con ese nombre
-                          QuerySnapshot querySnapshot =
-                              await collRef
-                                  .where('usuario', isEqualTo: usuario)
-                                  .get();
+                          QuerySnapshot querySnapshot = await collRef.where('usuario', isEqualTo: usuario).get();
 
                           if (querySnapshot.docs.isNotEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Este usuario ya existe."),
+                                content: Text("Este usuario ya existe", style: TextStyle(fontSize: 18)),
                                 backgroundColor: Colors.grey,
                                 duration: Duration(seconds: 3),
                               ),
@@ -349,7 +162,7 @@ class Registro extends StatelessWidget {
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("Usuario registrado con éxito"),
+                              content: Text("Usuario registrado con éxito", style: TextStyle(fontSize: 18)),
                               backgroundColor: Colors.green,
                               duration: Duration(seconds: 3),
                             ),
@@ -364,17 +177,16 @@ class Registro extends StatelessWidget {
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("Ocurrió un error al registrar."),
+                              content: Text("Ocurrió un error al registrar.", style: TextStyle(fontSize: 18)),
                               backgroundColor: Colors.red,
                               duration: Duration(seconds: 3),
                             ),
                           );
                         }
                       },
-
-                      child: const Text('Registro'),
+                      child: const Text('Registrar datos', style: TextStyle(color: Colors.white, fontSize: 18)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 66, 66, 66),
+                        backgroundColor: const Color.fromARGB(255, 88, 72, 175),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
@@ -386,6 +198,43 @@ class Registro extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, TextInputType inputType) {
+    return Container(
+      width: 315,
+      child: TextField(
+        cursorColor: const Color.fromARGB(255, 248, 200, 40),
+        controller: controller,
+        keyboardType: inputType,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.black,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.horizontal(
+              left: Radius.circular(50),
+              right: Radius.circular(50),
+            ),
+            borderSide: BorderSide(color: Colors.white, width: 2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.horizontal(
+              left: Radius.circular(50),
+              right: Radius.circular(50),
+            ),
+            borderSide: BorderSide(color: Colors.white, width: 2),
+          ),
+          labelText: label,
+          labelStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+          ),
+          contentPadding: const EdgeInsets.only(left: 25),
+          suffixIcon: const Padding(padding: EdgeInsets.only(right: 10)),
+        ),
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }

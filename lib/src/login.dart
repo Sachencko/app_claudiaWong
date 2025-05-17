@@ -43,11 +43,17 @@ class _LoginState extends State<Login> {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(50),
+            alignment: Alignment(0, -1.13),
+            padding: EdgeInsets.all(70),
             child: Image.asset("assets/claudiaLogin.png"),
           ),
+          Container(
+            alignment: Alignment(0, -0.49),
+            padding: EdgeInsets.all(40),
+            child: Image.asset("assets/claudiaLogin2.png"),
+          ),
           Align(
-            alignment: Alignment.center,
+            alignment: Alignment(0, 0.6),
             child: Padding(
               padding: EdgeInsets.only(top: topPadding),
               child: Column(

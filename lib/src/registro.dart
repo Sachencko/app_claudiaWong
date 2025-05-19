@@ -3,20 +3,73 @@ import 'package:claudia_wong_app/src/login.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Registro extends StatelessWidget {
+class Registro extends StatefulWidget {
   Registro({super.key});
-  int n = 0;
+
+  @override
+  State<Registro> createState() => _RegistroState();
+}
+
+class _RegistroState extends State<Registro> {
   final nombreController = TextEditingController();
   final apellidoController = TextEditingController();
   final usuarioController = TextEditingController();
   final correoController = TextEditingController();
   final passController = TextEditingController();
   final telController = TextEditingController();
+  final FocusNode nombreFocus = FocusNode();
+
+  void reiniciar() {
+    if (nombreController.text.isEmpty &&
+        apellidoController.text.isEmpty &&
+        usuarioController.text.isEmpty &&
+        correoController.text.isEmpty &&
+        passController.text.isEmpty &&
+        telController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Los campos ya están vacíos", style: TextStyle(fontSize: 18)),
+          backgroundColor: Colors.grey,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    nombreController.clear();
+    apellidoController.clear();
+    usuarioController.clear();
+    correoController.clear();
+    passController.clear();
+    telController.clear();
+
+    FocusScope.of(context).requestFocus(nombreFocus);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Campos limpiados", style: TextStyle(fontSize: 18)),
+        backgroundColor: Color.fromARGB(255, 26, 219, 19),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    nombreController.dispose();
+    apellidoController.dispose();
+    usuarioController.dispose();
+    correoController.dispose();
+    passController.dispose();
+    telController.dispose();
+    nombreFocus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           Positioned.fill(
@@ -41,14 +94,22 @@ class Registro extends StatelessWidget {
               },
             ),
           ),
+          Positioned(
+            top: 40,
+            right: 10,
+            child: IconButton(
+              icon: const Icon(Icons.delete, color: Color.fromARGB(255, 192, 5, 5), size: 30),
+              onPressed: reiniciar,
+            ),
+          ),
           Align(
             alignment: Alignment.center,
-            child: Padding(
+            child: SingleChildScrollView(
               padding: EdgeInsets.only(top: 20),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildTextField(nombreController, "Nombre", TextInputType.name),
+                  _buildTextField(nombreController, "Nombre", TextInputType.name, nombreFocus),
                   const SizedBox(height: 30),
                   _buildTextField(apellidoController, "Apellido", TextInputType.name),
                   const SizedBox(height: 30),
@@ -88,7 +149,6 @@ class Registro extends StatelessWidget {
                           return;
                         }
 
-                        // Validar que nombre y apellido no tengan números
                         if (RegExp(r'[0-9]').hasMatch(nombre)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -111,7 +171,6 @@ class Registro extends StatelessWidget {
                           return;
                         }
 
-                        // Validar correo con @ y un dominio (.com, .net, etc)
                         if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(correo)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -123,7 +182,6 @@ class Registro extends StatelessWidget {
                           return;
                         }
 
-                        // Validar teléfono: solo números y exactamente 9 dígitos
                         if (!RegExp(r'^[0-9]{9}$').hasMatch(telefono)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -202,13 +260,14 @@ class Registro extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, TextInputType inputType) {
+  Widget _buildTextField(TextEditingController controller, String label, TextInputType inputType, [FocusNode? focusNode]) {
     return Container(
       width: 315,
       child: TextField(
         cursorColor: const Color.fromARGB(255, 248, 200, 40),
         controller: controller,
         keyboardType: inputType,
+        focusNode: focusNode,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.black,

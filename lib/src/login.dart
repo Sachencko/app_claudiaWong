@@ -48,8 +48,8 @@ class _LoginState extends State<Login> {
             child: Image.asset("assets/claudiaLogin.png"),
           ),
           Container(
-            alignment: Alignment(0, -0.49),
-            padding: EdgeInsets.all(40),
+            alignment: Alignment(0, -0.45),
+            padding: EdgeInsets.all(10),
             child: Image.asset("assets/claudiaLogin2.png"),
           ),
           Align(
@@ -59,7 +59,6 @@ class _LoginState extends State<Login> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-
                   Container(
                     width: 315,
                     child: TextField(
@@ -101,7 +100,6 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   const SizedBox(height: 30),
-
                   Container(
                     width: 315,
                     child: TextField(
@@ -270,7 +268,6 @@ class _LoginState extends State<Login> {
 
                         try {
                           if (_selectedRole == 'Cuenta de administrador') {
-                            // Busca solo en colección 'administradores'
                             QuerySnapshot adminSnapshot = await FirebaseFirestore.instance
                                 .collection('administrador')
                                 .where('usuario', isEqualTo: usuario)
@@ -279,7 +276,6 @@ class _LoginState extends State<Login> {
                                 .get();
 
                             if (adminSnapshot.docs.isNotEmpty) {
-                              // Si el login es válido para administrador, navega a la pantalla de usuario normal
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -298,7 +294,6 @@ class _LoginState extends State<Login> {
                               );
                             }
                           } else {
-                            // Para usuarios normales, busca en colección 'usuario'
                             QuerySnapshot userSnapshot = await FirebaseFirestore.instance
                                 .collection('usuario')
                                 .where('usuario', isEqualTo: usuario)
@@ -344,33 +339,37 @@ class _LoginState extends State<Login> {
                     ),
                   ),
 
-                  if (_selectedRole == 'Usuario') ...[
-                    const SizedBox(height: 15),
-                    SizedBox(
-                      width: 315,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Registro(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[800],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
+                  const SizedBox(height: 15),
+
+                  SizedBox(
+                    width: 315,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: _selectedRole == 'Usuario'
+                          ? () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Registro(),
+                                ),
+                              );
+                            }
+                          : null, // desactivado para admins
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[800],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
                         ),
-                        child: Text(
-                          "Registrarse",
-                          style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      child: Text(
+                        "Registrarse",
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(_selectedRole == 'Usuario' ? 1.0 : 0.5),
+                          fontSize: 18,
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),

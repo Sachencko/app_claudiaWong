@@ -12,7 +12,6 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
-  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(home: Login(), debugShowCheckedModeBanner: false);

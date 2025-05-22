@@ -354,7 +354,7 @@ class _LoginState extends State<Login> {
                                 ),
                               );
                             }
-                          : null, // desactivado para admins
+                          : null,//DESACTIVADO para admins
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[800],
                         shape: RoundedRectangleBorder(

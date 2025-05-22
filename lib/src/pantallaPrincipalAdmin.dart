@@ -46,7 +46,7 @@ void initState() {
             )
           ]
         ),
-          padding: const EdgeInsets.only(top: 25), // espacio para status bar
+          padding: const EdgeInsets.only(top: 25), 
           alignment: Alignment.center,
           child: Stack(
             alignment: Alignment.center,

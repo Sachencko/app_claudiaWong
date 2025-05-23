@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'FechaScreen.dart'; 
+import 'FechaScreen.dart';
 
 class Agregar extends StatefulWidget {
-  const Agregar({super.key});
+  final String usuario;
+  const Agregar({super.key, required this.usuario});
 
   @override
   State<Agregar> createState() => _AgregarState();
@@ -11,20 +12,20 @@ class Agregar extends StatefulWidget {
 
 class _AgregarState extends State<Agregar> {
   void guardarYContinuar(String servicio) async {
-  DocumentReference docRef = await FirebaseFirestore.instance.collection("agregar").add({
+    DocumentReference docRef = await FirebaseFirestore.instance.collection("agregar").add({
+    "usuario": widget.usuario,
     "servicio": servicio,
     "fecha": null,
     "creado": Timestamp.now(),
   });
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => FechaScreen(documentId: docRef.id, servicio: servicio),
-    ),
-  );
-}
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FechaScreen(documentId: docRef.id, servicio: servicio, usuario: widget.usuario,),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

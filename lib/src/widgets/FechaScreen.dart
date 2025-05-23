@@ -6,11 +6,13 @@ import 'package:table_calendar/table_calendar.dart';
 class FechaScreen extends StatefulWidget {
   final String servicio;
   final String documentId;
+    final String usuario;
 
   const FechaScreen({
     super.key,
     required this.servicio,
-    required this.documentId,
+    required this.documentId, 
+    required this.usuario,
   });
 
   @override
@@ -83,7 +85,7 @@ class _FechaScreenState extends State<FechaScreen> {
                             builder:
                                 (context) => HorarioScreen(
                                   documentId: widget.documentId,
-                                  fecha: fechaSeleccionada!,
+                                  fecha: fechaSeleccionada!, usuario: widget.usuario,
                                 ),
                           ),
                         ); 

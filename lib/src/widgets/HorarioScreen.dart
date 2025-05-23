@@ -8,8 +8,14 @@ import 'package:intl/intl.dart';
 class HorarioScreen extends StatefulWidget {
   final String documentId;
   final DateTime fecha;
+  final String usuario;
 
-  const HorarioScreen({super.key, required this.documentId, required this.fecha});
+  const HorarioScreen({
+    super.key,
+    required this.documentId,
+    required this.fecha, 
+    required this.usuario,
+  });
 
   @override
   State<HorarioScreen> createState() => _HorarioScreenState();
@@ -26,16 +32,16 @@ class _HorarioScreenState extends State<HorarioScreen> {
     "3:00 p.m",
   ];
 
-
   Future<void> guardarHorario() async {
-    await FirebaseFirestore.instance.collection("agregar").doc(widget.documentId).update({
-      "horario": horarioSeleccionado,
-    });
+    await FirebaseFirestore.instance
+        .collection("agregar")
+        .doc(widget.documentId)
+        .update({"horario": horarioSeleccionado});
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Horario guardado: $horarioSeleccionado")),
     );
-    Navigator.popUntil(context, (route) => route.isFirst); 
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
 
   @override
@@ -43,9 +49,7 @@ class _HorarioScreenState extends State<HorarioScreen> {
     final fechaTexto = DateFormat('dd/MM/yyyy').format(widget.fecha);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Selecciona tu horario"),
-      ),
+      appBar: AppBar(title: Text("Selecciona tu horario")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -76,7 +80,10 @@ class _HorarioScreenState extends State<HorarioScreen> {
                       margin: const EdgeInsets.only(bottom: 12),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: horarioSeleccionado == hora ? Colors.blue.shade50 : Colors.white,
+                        color:
+                            horarioSeleccionado == hora
+                                ? Colors.blue.shade50
+                                : Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
@@ -104,14 +111,17 @@ class _HorarioScreenState extends State<HorarioScreen> {
                               const SizedBox(height: 4),
                               Text(
                                 "Disponible",
-                                style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),
                           Text(
                             fechaTexto,
                             style: TextStyle(color: Colors.grey.shade700),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -121,24 +131,27 @@ class _HorarioScreenState extends State<HorarioScreen> {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: horarioSeleccionado == null ? null : () async {
-    int codigo = Random().nextInt(900000) + 100000;
+              onPressed:
+                  horarioSeleccionado == null
+                      ? null
+                      : () async {
+                        int codigo = Random().nextInt(900000) + 100000;
 
-    await FirebaseFirestore.instance
-        .collection("agregar")
-        .doc(widget.documentId)
-        .update({
-      "horario": horarioSeleccionado,
-      "codigo": codigo,
-    });
+                        await FirebaseFirestore.instance
+                            .collection("agregar")
+                            .doc(widget.documentId)
+                            .update({
+                              "horario": horarioSeleccionado,
+                              "codigo": codigo,
+                            });
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Noti(codigo: codigo),
-      ),
-    );
-  },
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Noti(codigo: codigo, usuario: widget.usuario,),
+                          ),
+                        );
+                      },
               child: const Text("Agregar"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.amber.shade700,

@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'package:claudia_wong_app/src/pantallaPrincipal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
+import 'package:flutter/services.dart';
+
+// Asumo que tu pantalla principal se llama PantallaPrincipal y recibe un usuario String
 
 class Noti extends StatefulWidget {
   final int codigo;
+  final String usuario;  // Añadimos usuario
 
-  const Noti({super.key, required this.codigo});
+  const Noti({super.key, required this.codigo, required this.usuario});
 
   @override
   State<Noti> createState() => _NotiState();
@@ -16,7 +20,13 @@ class _NotiState extends State<Noti> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 5), () {
-      Navigator.popUntil(context, (route) => route.isFirst); 
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => pantallaPrincipal(usuario: widget.usuario), // Pasamos el usuario
+        ),
+        (route) => false,  // Elimina toda la pila para que esta sea la nueva raíz
+      );
     });
   }
 

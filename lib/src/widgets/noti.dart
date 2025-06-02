@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:claudia_wong_app/src/pantallaPrincipal.dart';
+import 'package:claudia_wong_app/src/presentation/screens/pantallaPrincipal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

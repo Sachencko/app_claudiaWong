@@ -2,9 +2,9 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:claudia_wong_app/src/pantallaPrincipal.dart';
-import 'package:claudia_wong_app/src/pantallaPrincipalAdmin.dart';
-import 'package:claudia_wong_app/src/registro.dart';
+import 'package:claudia_wong_app/src/presentation/screens/pantallaPrincipal.dart';
+import 'package:claudia_wong_app/src/presentation/screens/pantallaPrincipalAdmin.dart';
+import 'package:claudia_wong_app/src/presentation/screens/registro.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -40,12 +40,10 @@ class _LoginState extends State<Login> {
     }
 
     try {
-      // Autenticación con Firebase Auth
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: correo, password: pass);
       String uid = userCredential.user!.uid;
 
-      // Verificar rol en Firestore
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('usuarios')
           .doc(uid)
@@ -81,6 +79,32 @@ class _LoginState extends State<Login> {
           ),
         );
       }
+    } on FirebaseAuthException catch (e) {
+      String mensaje = 'Ha ocurrido un error.';
+
+      switch (e.code) {
+        case 'invalid-email':
+          mensaje = 'El correo electrónico no es válido.';
+          break;
+        case 'user-not-found':
+          mensaje = 'No se encontró ningún usuario con ese correo.';
+          break;
+        case 'wrong-password':
+          mensaje = 'La contraseña es incorrecta.';
+          break;
+        case 'user-disabled':
+          mensaje = 'Esta cuenta ha sido deshabilitada.';
+          break;
+        default:
+          mensaje = 'Error al iniciar sesión. Intenta nuevamente.';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(mensaje),
+          backgroundColor: Colors.red,
+        ),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -99,7 +123,6 @@ class _LoginState extends State<Login> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          // Fondo
           Positioned.fill(
             child: Image.asset("assets/loginBackground.jpg", fit: BoxFit.cover),
           ),
@@ -120,13 +143,12 @@ class _LoginState extends State<Login> {
             child: Image.asset("assets/claudiaLogin2.png"),
           ),
           Align(
-            alignment: const Alignment(0, 0.6),
+            alignment: const Alignment(0, 0.2),
             child: Padding(
               padding: EdgeInsets.only(top: topPadding),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Email
                   Container(
                     width: 315,
                     child: TextField(
@@ -151,8 +173,6 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   const SizedBox(height: 30),
-
-                  // Contraseña
                   Container(
                     width: 315,
                     child: TextField(
@@ -184,9 +204,8 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   const SizedBox(height: 30),
-
-                  // Rol
                   Container(
+                    alignment: Alignment(0, 24),
                     width: 315,
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     decoration: BoxDecoration(
@@ -218,15 +237,11 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   const SizedBox(height: 30),
-
-                  // Divider
                   Container(
                     width: 315,
                     child: const Divider(color: Colors.white70, thickness: 1),
                   ),
                   const SizedBox(height: 30),
-
-                  // Botón Ingresar
                   SizedBox(
                     width: 315,
                     height: 50,
@@ -244,10 +259,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 15),
-
-                  // Botón Registrarse
                   SizedBox(
                     width: 315,
                     height: 50,

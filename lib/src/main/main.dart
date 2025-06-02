@@ -1,7 +1,7 @@
-import 'package:claudia_wong_app/src/login.dart';
+import 'package:claudia_wong_app/src/presentation/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:claudia_wong_app/src/firebase/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

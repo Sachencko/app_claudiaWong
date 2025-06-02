@@ -1,4 +1,4 @@
-import 'package:claudia_wong_app/src/widgets/HorarioScreen.dart';
+import 'package:claudia_wong_app/src/presentation/screens/HorarioScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';

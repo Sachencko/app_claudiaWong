@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import 'package:claudia_wong_app/src/login.dart';
-import 'package:claudia_wong_app/src/widgets/agregar.dart';
+import 'package:claudia_wong_app/src/presentation/screens/login.dart';
+import 'package:claudia_wong_app/src/presentation/screens/agregar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

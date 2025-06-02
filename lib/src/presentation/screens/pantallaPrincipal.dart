@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import 'package:claudia_wong_app/src/login.dart';
-import 'package:claudia_wong_app/src/widgets/agregar.dart';
+import 'package:claudia_wong_app/src/presentation/screens/login.dart';
+import 'package:claudia_wong_app/src/presentation/screens/agregar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -183,6 +183,7 @@ class Screen1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 230, 215, 186),
       body: Column(
         children: [
           Align(
@@ -195,7 +196,7 @@ class Screen1 extends StatelessWidget {
                     'Bienvenido $usuario',
                     style: const TextStyle(
                       fontSize: 19,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.bold,
                       color: Color.fromARGB(131, 0, 0, 0),
                     ),
                   ),
@@ -207,6 +208,21 @@ class Screen1 extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(width: 12, height: 6),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              child: SizedBox(width: 150, height: 40, child: Center(child: Text('Mis citas', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20, color: Colors.white),),),),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 73, 73, 73),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 12, height: 12),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream:
@@ -248,6 +264,7 @@ class Screen1 extends StatelessWidget {
                     final horario = data['horario'] ?? 'Sin horario';
 
                     return Card(
+                      color: const Color.fromARGB(255, 128, 128, 128),
                       margin: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 8,
@@ -257,8 +274,10 @@ class Screen1 extends StatelessWidget {
                         title: Text(
                           "Servicio: $servicio",
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.italic,
                             fontSize: 18,
+                            color: Colors.white,
                           ),
                         ),
                         subtitle: Text(
@@ -266,9 +285,10 @@ class Screen1 extends StatelessWidget {
                               ? "Fecha: ${DateFormat('dd/MM/yyyy').format(fecha)}\nHorario: $horario"
                               : "Horario: $horario",
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.italic,
                             fontSize: 18,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         ),
                         trailing: Text(
@@ -322,10 +342,10 @@ class _Screen2State extends State<Screen2> {
             .collection("agregar")
             .where("codigo", isEqualTo: codigoBuscado)
             .get();
-
     if (query.docs.isNotEmpty) {
       setState(() {
         citaEncontrada = query.docs.first;
+        
       });
     } else {
       setState(() {
@@ -396,55 +416,71 @@ class _Screen2State extends State<Screen2> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          const Text("Buscar cita por código", style: TextStyle(fontSize: 20)),
-          const SizedBox(height: 10),
-          TextField(
-            controller: codigoController,
-            decoration: InputDecoration(
-              labelText: "Código de cita",
-              border: OutlineInputBorder(),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: buscarCita,
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 230, 215, 186),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            SizedBox(width: 12, height: 6),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              child: SizedBox(width: 250, height: 40, child: Center(child: Text('Buscar cita a eliminar', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20, color: Colors.white),),),),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 73, 73, 73),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                ),
               ),
             ),
-            keyboardType: TextInputType.number,
           ),
-          const SizedBox(height: 20),
-          if (citaEncontrada != null)
-            Card(
-              margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-              child: ListTile(
-                title: Text(
-                  "Servicio: ${citaEncontrada!['servicio']}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: codigoController,
+              decoration: InputDecoration(
+                labelText: "Coloca aqui tu codigo de cita :D",
+                border: OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: buscarCita,
                 ),
-                subtitle: Text(
-                  "Fecha: ${DateFormat('dd/MM/yyyy').format((citaEncontrada!['fecha'] as Timestamp).toDate())}\n"
-                  "Horario: ${citaEncontrada!['horario']}",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                trailing: ElevatedButton(
-                  onPressed: () => cancelarCita(citaEncontrada!),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 221, 51, 39),
-                  ),
-                  child: const Text(
-                    "Cancelar",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                isThreeLine: true,
               ),
+              keyboardType: TextInputType.number,
             ),
-        ],
+            const SizedBox(height: 20),
+            if (citaEncontrada != null)
+              Card(
+                margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                child: ListTile(
+                  title: Text(
+                    "Servicio: ${citaEncontrada!['servicio']}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  subtitle: Text(
+                    "Fecha: ${DateFormat('dd/MM/yyyy').format((citaEncontrada!['fecha'] as Timestamp).toDate())}\n"
+                    "Horario: ${citaEncontrada!['horario']}",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  trailing: ElevatedButton(
+                    onPressed: () => cancelarCita(citaEncontrada!),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 221, 51, 39),
+                    ),
+                    child: const Text(
+                      "Cancelar",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  isThreeLine: true,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -477,14 +513,16 @@ class _Screen3State extends State<Screen3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Modificar cita")),
+      backgroundColor: const Color.fromARGB(255, 230, 215, 186),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('agregar')
-            .where('usuario', isEqualTo: widget.usuario)
-            .snapshots(),
+        stream:
+            FirebaseFirestore.instance
+                .collection('agregar')
+                .where('usuario', isEqualTo: widget.usuario)
+                .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+          if (!snapshot.hasData)
+            return const Center(child: CircularProgressIndicator());
 
           final citas = snapshot.data!.docs;
 
@@ -499,7 +537,6 @@ class _Screen3State extends State<Screen3> {
               final cita = citas[index];
               final data = cita.data() as Map<String, dynamic>;
 
-
               String fechaStr = 'Sin fecha';
               DateTime? fechaDateTime;
               if (data['fecha'] != null && data['fecha'] is Timestamp) {
@@ -513,7 +550,9 @@ class _Screen3State extends State<Screen3> {
 
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 elevation: 5,
                 child: ListTile(
                   subtitle: Column(
@@ -525,7 +564,8 @@ class _Screen3State extends State<Screen3> {
                     ],
                   ),
                   trailing: const Icon(Icons.edit, color: Colors.blue),
-                  onTap: () => _mostrarDialogoModificacion(context, cita.id, data),
+                  onTap:
+                      () => _mostrarDialogoModificacion(context, cita.id, data),
                 ),
               );
             },
@@ -535,7 +575,11 @@ class _Screen3State extends State<Screen3> {
     );
   }
 
-  void _mostrarDialogoModificacion(BuildContext context, String citaId, Map<String, dynamic> data) {
+  void _mostrarDialogoModificacion(
+    BuildContext context,
+    String citaId,
+    Map<String, dynamic> data,
+  ) {
     // No hay campo descripción editable ahora
 
     // Fecha inicial
@@ -579,18 +623,26 @@ class _Screen3State extends State<Screen3> {
                     // Selector fecha en Card
                     Card(
                       margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       elevation: 3,
                       child: ListTile(
                         title: const Text("Fecha"),
-                        subtitle: Text(DateFormat('dd/MM/yyyy').format(selectedDate)),
+                        subtitle: Text(
+                          DateFormat('dd/MM/yyyy').format(selectedDate),
+                        ),
                         trailing: const Icon(Icons.calendar_today),
                         onTap: () async {
                           final picked = await showDatePicker(
                             context: context,
                             initialDate: selectedDate,
-                            firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                            lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                            firstDate: DateTime.now().subtract(
+                              const Duration(days: 365),
+                            ),
+                            lastDate: DateTime.now().add(
+                              const Duration(days: 365 * 2),
+                            ),
                           );
                           if (picked != null) {
                             setStateDialog(() {
@@ -604,7 +656,9 @@ class _Screen3State extends State<Screen3> {
                     // Selector servicio en Card
                     Card(
                       margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       elevation: 3,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -613,23 +667,28 @@ class _Screen3State extends State<Screen3> {
                           children: [
                             const Text(
                               "Servicio",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                             ),
                             const SizedBox(height: 8),
                             Wrap(
                               spacing: 8,
-                              children: servicios.map((servicio) {
-                                final isSelected = servicioSeleccionado == servicio;
-                                return ChoiceChip(
-                                  label: Text(servicio),
-                                  selected: isSelected,
-                                  onSelected: (_) {
-                                    setStateDialog(() {
-                                      servicioSeleccionado = servicio;
-                                    });
-                                  },
-                                );
-                              }).toList(),
+                              children:
+                                  servicios.map((servicio) {
+                                    final isSelected =
+                                        servicioSeleccionado == servicio;
+                                    return ChoiceChip(
+                                      label: Text(servicio),
+                                      selected: isSelected,
+                                      onSelected: (_) {
+                                        setStateDialog(() {
+                                          servicioSeleccionado = servicio;
+                                        });
+                                      },
+                                    );
+                                  }).toList(),
                             ),
                           ],
                         ),
@@ -639,7 +698,9 @@ class _Screen3State extends State<Screen3> {
                     // Selector horario en Card
                     Card(
                       margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       elevation: 3,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -648,23 +709,28 @@ class _Screen3State extends State<Screen3> {
                           children: [
                             const Text(
                               "Horario",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                             ),
                             const SizedBox(height: 8),
                             Wrap(
                               spacing: 8,
-                              children: horarios.map((hora) {
-                                final isSelected = horarioSeleccionado == hora;
-                                return ChoiceChip(
-                                  label: Text(hora),
-                                  selected: isSelected,
-                                  onSelected: (_) {
-                                    setStateDialog(() {
-                                      horarioSeleccionado = hora;
-                                    });
-                                  },
-                                );
-                              }).toList(),
+                              children:
+                                  horarios.map((hora) {
+                                    final isSelected =
+                                        horarioSeleccionado == hora;
+                                    return ChoiceChip(
+                                      label: Text(hora),
+                                      selected: isSelected,
+                                      onSelected: (_) {
+                                        setStateDialog(() {
+                                          horarioSeleccionado = hora;
+                                        });
+                                      },
+                                    );
+                                  }).toList(),
                             ),
                           ],
                         ),
@@ -686,14 +752,16 @@ class _Screen3State extends State<Screen3> {
                           .collection('agregar')
                           .doc(citaId)
                           .update({
-                        'fecha': Timestamp.fromDate(selectedDate),
-                        'servicio': servicioSeleccionado,
-                        'horario': horarioSeleccionado,
-                      });
+                            'fecha': Timestamp.fromDate(selectedDate),
+                            'servicio': servicioSeleccionado,
+                            'horario': horarioSeleccionado,
+                          });
 
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Cita modificada correctamente')),
+                        const SnackBar(
+                          content: Text('Cita modificada correctamente'),
+                        ),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -711,7 +779,6 @@ class _Screen3State extends State<Screen3> {
   }
 }
 
-
 class Screen4 extends StatelessWidget {
   const Screen4({super.key, required this.usuario});
   final String usuario;
@@ -728,6 +795,7 @@ class Screen4 extends StatelessWidget {
     final uid = user.uid;
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 230, 215, 186),
       body: StreamBuilder<QuerySnapshot>(
         stream:
             FirebaseFirestore.instance

@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:claudia_wong_app/src/login.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Registro extends StatefulWidget {
   Registro({super.key});
@@ -28,7 +29,10 @@ class _RegistroState extends State<Registro> {
         telController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Los campos ya están vacíos", style: TextStyle(fontSize: 18)),
+          content: Text(
+            "Los campos ya están vacíos",
+            style: TextStyle(fontSize: 18),
+          ),
           backgroundColor: Colors.grey,
           duration: Duration(seconds: 2),
         ),
@@ -98,7 +102,11 @@ class _RegistroState extends State<Registro> {
             top: 40,
             right: 10,
             child: IconButton(
-              icon: const Icon(Icons.delete, color: Color.fromARGB(255, 192, 5, 5), size: 30),
+              icon: const Icon(
+                Icons.delete,
+                color: Color.fromARGB(255, 192, 5, 5),
+                size: 30,
+              ),
               onPressed: reiniciar,
             ),
           ),
@@ -109,17 +117,42 @@ class _RegistroState extends State<Registro> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildTextField(nombreController, "Nombre", TextInputType.name, nombreFocus),
+                  _buildTextField(
+                    nombreController,
+                    "Nombre",
+                    TextInputType.name,
+                    nombreFocus,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(apellidoController, "Apellido", TextInputType.name),
+                  _buildTextField(
+                    apellidoController,
+                    "Apellido",
+                    TextInputType.name,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(usuarioController, "Usuario", TextInputType.name),
+                  _buildTextField(
+                    usuarioController,
+                    "Usuario",
+                    TextInputType.name,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(correoController, "Correo", TextInputType.emailAddress),
+                  _buildTextField(
+                    correoController,
+                    "Correo",
+                    TextInputType.emailAddress,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(passController, "Contraseña", TextInputType.visiblePassword),
+                  _buildTextField(
+                    passController,
+                    "Contraseña",
+                    TextInputType.visiblePassword,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(telController, "Telefono", TextInputType.phone),
+                  _buildTextField(
+                    telController,
+                    "Telefono",
+                    TextInputType.phone,
+                  ),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: 315,
@@ -133,6 +166,7 @@ class _RegistroState extends State<Registro> {
                         String pass = passController.text.trim();
                         String telefono = telController.text.trim();
 
+                        // Validaciones básicas:
                         if (nombre.isEmpty ||
                             apellido.isEmpty ||
                             usuario.isEmpty ||
@@ -141,7 +175,10 @@ class _RegistroState extends State<Registro> {
                             telefono.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("Todos los campos deben estar completos", style: TextStyle(fontSize: 18)),
+                              content: Text(
+                                "Todos los campos deben estar completos",
+                                style: TextStyle(fontSize: 18),
+                              ),
                               backgroundColor: Colors.grey,
                               duration: Duration(seconds: 3),
                             ),
@@ -152,7 +189,10 @@ class _RegistroState extends State<Registro> {
                         if (RegExp(r'[0-9]').hasMatch(nombre)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("El nombre no puede contener números", style: TextStyle(fontSize: 18)),
+                              content: Text(
+                                "El nombre no puede contener números",
+                                style: TextStyle(fontSize: 18),
+                              ),
                               backgroundColor: Colors.grey,
                               duration: Duration(seconds: 3),
                             ),
@@ -163,7 +203,10 @@ class _RegistroState extends State<Registro> {
                         if (RegExp(r'[0-9]').hasMatch(apellido)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("El apellido no puede contener números", style: TextStyle(fontSize: 18)),
+                              content: Text(
+                                "El apellido no puede contener números",
+                                style: TextStyle(fontSize: 18),
+                              ),
                               backgroundColor: Colors.grey,
                               duration: Duration(seconds: 3),
                             ),
@@ -174,7 +217,10 @@ class _RegistroState extends State<Registro> {
                         if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(correo)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("El correo no es correcto", style: TextStyle(fontSize: 18)),
+                              content: Text(
+                                "El correo no es correcto",
+                                style: TextStyle(fontSize: 18),
+                              ),
                               backgroundColor: Colors.grey,
                               duration: Duration(seconds: 3),
                             ),
@@ -185,7 +231,10 @@ class _RegistroState extends State<Registro> {
                         if (!RegExp(r'^[0-9]{9}$').hasMatch(telefono)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("El teléfono debe tener 9 dígitos numéricos", style: TextStyle(fontSize: 18)),
+                              content: Text(
+                                "El teléfono debe tener 9 dígitos numéricos",
+                                style: TextStyle(fontSize: 18),
+                              ),
                               backgroundColor: Colors.grey,
                               duration: Duration(seconds: 3),
                             ),
@@ -194,14 +243,24 @@ class _RegistroState extends State<Registro> {
                         }
 
                         try {
-                          CollectionReference collRef = FirebaseFirestore.instance.collection('usuario');
+                          // Referencia a colección usuarios
+                          CollectionReference usuariosRef = FirebaseFirestore
+                              .instance
+                              .collection('usuarios');
 
-                          QuerySnapshot querySnapshot = await collRef.where('usuario', isEqualTo: usuario).get();
+                          // Verifica si el nombre de usuario ya existe
+                          QuerySnapshot querySnapshot =
+                              await usuariosRef
+                                  .where('usuario', isEqualTo: usuario)
+                                  .get();
 
                           if (querySnapshot.docs.isNotEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Este usuario ya existe", style: TextStyle(fontSize: 18)),
+                                content: Text(
+                                  "Este usuario ya existe",
+                                  style: TextStyle(fontSize: 18),
+                                ),
                                 backgroundColor: Colors.grey,
                                 duration: Duration(seconds: 3),
                               ),
@@ -209,40 +268,70 @@ class _RegistroState extends State<Registro> {
                             return;
                           }
 
-                          await collRef.add({
-                            'apellido': apellido,
-                            'contraseña': pass,
-                            'correo': correo,
-                            'nombre': nombre,
-                            'telefono': telefono,
-                            'usuario': usuario,
-                          });
+                          // Crear usuario en Firebase Auth
+                          UserCredential userCredential = await FirebaseAuth
+                              .instance
+                              .createUserWithEmailAndPassword(
+                                email: correo,
+                                password: pass,
+                              );
 
+                          // Guardar datos adicionales en Firestore con UID del usuario
+                          await usuariosRef.doc(userCredential.user!.uid).set({
+                            'nombre': nombre,
+                            'apellido': apellido,
+                            'usuario': usuario,
+                            'correo': correo,
+                            'telefono': telefono,
+                            'rol': 'usuario', // ← ESTE CAMPO ES CLAVE
+                            'creadoEn': Timestamp.now(),
+                          });
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("Usuario registrado con éxito", style: TextStyle(fontSize: 18)),
+                              content: Text(
+                                "Usuario registrado con éxito",
+                                style: TextStyle(fontSize: 18),
+                              ),
                               backgroundColor: Colors.green,
                               duration: Duration(seconds: 3),
                             ),
                           );
 
+                          // Redirigir al login o pantalla principal
                           Future.delayed(const Duration(seconds: 1), () {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) => Login()),
                             );
                           });
+                        } on FirebaseAuthException catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                e.message ?? "Error al registrar usuario.",
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              backgroundColor: Colors.red,
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("Ocurrió un error al registrar.", style: TextStyle(fontSize: 18)),
+                              content: Text(
+                                "Ocurrió un error inesperado.",
+                                style: TextStyle(fontSize: 18),
+                              ),
                               backgroundColor: Colors.red,
                               duration: Duration(seconds: 3),
                             ),
                           );
                         }
                       },
-                      child: const Text('Registrar datos', style: TextStyle(color: Colors.white, fontSize: 18)),
+                      child: const Text(
+                        'Registrar datos',
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 88, 72, 175),
                         shape: RoundedRectangleBorder(
@@ -260,7 +349,12 @@ class _RegistroState extends State<Registro> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, TextInputType inputType, [FocusNode? focusNode]) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    TextInputType inputType, [
+    FocusNode? focusNode,
+  ]) {
     return Container(
       width: 315,
       child: TextField(
@@ -268,6 +362,7 @@ class _RegistroState extends State<Registro> {
         controller: controller,
         keyboardType: inputType,
         focusNode: focusNode,
+        obscureText: label == "Contraseña" ? true : false,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.black,
@@ -286,10 +381,7 @@ class _RegistroState extends State<Registro> {
             borderSide: BorderSide(color: Colors.white, width: 2),
           ),
           labelText: label,
-          labelStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
+          labelStyle: const TextStyle(color: Colors.white, fontSize: 18),
           contentPadding: const EdgeInsets.only(left: 25),
           suffixIcon: const Padding(padding: EdgeInsets.only(right: 10)),
         ),

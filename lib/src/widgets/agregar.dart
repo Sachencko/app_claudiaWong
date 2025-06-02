@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'FechaScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Agregar extends StatefulWidget {
   final String usuario;
@@ -12,8 +13,14 @@ class Agregar extends StatefulWidget {
 
 class _AgregarState extends State<Agregar> {
   void guardarYContinuar(String servicio) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser == null) {
+    print("Usuario no autenticado");
+    return;
+  }
     DocumentReference docRef = await FirebaseFirestore.instance.collection("agregar").add({
     "usuario": widget.usuario,
+    "usuarioId": currentUser.uid,
     "servicio": servicio,
     "fecha": null,
     "creado": Timestamp.now(),

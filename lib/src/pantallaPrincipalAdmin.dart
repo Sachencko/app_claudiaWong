@@ -1,6 +1,9 @@
-import 'dart:io';
 import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:claudia_wong_app/src/login.dart';
+import 'package:claudia_wong_app/src/widgets/agregar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,9 +25,9 @@ void initState() {
   super.initState();
   _screens.addAll([
     Screen1(usuario: widget.usuario),
-    const Screen2(),
-    const Screen3(),
-    const Screen4(),
+    Screen2(usuario: widget.usuario),
+    Screen3(usuario: widget.usuario),
+    Screen4(usuario: widget.usuario),
   ]);
 }
 
@@ -141,27 +144,122 @@ class Screen1 extends StatelessWidget {
   final String usuario;
 
   const Screen1({super.key, required this.usuario});
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Text('Admin: ${usuario}', 
+      appBar: AppBar(title: const Text("Usuarios registrados")),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('usuarios').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
 
-        style: TextStyle(
-          color: Colors.green,
-          fontSize: 19,
-          fontWeight: FontWeight.w500,
-        )),
+          final usuarios = snapshot.data!.docs;
+
+          if (usuarios.isEmpty) {
+            return const Center(child: Text("No hay usuarios registrados."));
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: usuarios.length,
+            itemBuilder: (context, index) {
+              final userDoc = usuarios[index];
+              final data = userDoc.data()! as Map<String, dynamic>;
+
+              final nombre = data['nombre'] ?? 'Sin nombre';
+              final apellido = data['apellido'] ?? '';
+              final telefono = data['telefono'] ?? 'Sin teléfono';
+              final email = data['email'] ?? 'Sin email';
+
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                elevation: 4,
+                child: ListTile(
+                  title: Text('$nombre $apellido', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text('Teléfono: $telefono\nEmail: $email'),
+                  isThreeLine: true,
+                  trailing: const Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => UsuarioCitasScreen(
+                          usuario: usuario,
+                          usuarioId: userDoc.id,
+                          usuarioEmail: email,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
 
+
+class UsuarioCitasScreen extends StatelessWidget {
+  final String usuario;
+  final String usuarioId;
+  final String usuarioEmail;
+
+  const UsuarioCitasScreen({super.key, required this.usuario, required this.usuarioId, required this.usuarioEmail });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Citas de $usuario")),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('agregar')
+            .where('usuario', isEqualTo: usuarioEmail)  // <-- Aquí uso usuarioEmail
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+
+          final citas = snapshot.data!.docs;
+
+          if (citas.isEmpty) {
+            return const Center(child: Text("Este usuario no tiene citas."));
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: citas.length,
+            itemBuilder: (context, index) {
+              final cita = citas[index];
+              final data = cita.data()! as Map<String, dynamic>;
+              final fecha = data['fecha'] is Timestamp
+                  ? DateFormat('dd/MM/yyyy').format((data['fecha'] as Timestamp).toDate())
+                  : data['fecha'] ?? 'Sin fecha';
+              final horario = data['horario'] ?? 'Sin horario';
+
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                elevation: 3,
+                child: ListTile(
+                  title: Text("Horario: $horario"),
+                  subtitle: Text("Fecha: $fecha"),
+                  trailing: const Icon(Icons.event_note),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+} 
+
 class Screen2 extends StatelessWidget {
-  const Screen2({super.key});
+  const Screen2({super.key, required String usuario});
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +270,7 @@ class Screen2 extends StatelessWidget {
 }
 
 class Screen3 extends StatelessWidget {
-  const Screen3({super.key});
+  const Screen3({super.key, required String usuario});
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +281,7 @@ class Screen3 extends StatelessWidget {
 }
 
 class Screen4 extends StatelessWidget {
-  const Screen4({super.key});
+  const Screen4({super.key, required String usuario});
 
   @override
   Widget build(BuildContext context) {

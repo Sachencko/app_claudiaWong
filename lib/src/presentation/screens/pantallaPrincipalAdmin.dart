@@ -280,15 +280,94 @@ class Screen3 extends StatelessWidget {
   }
 }
 
-class Screen4 extends StatelessWidget {
-  const Screen4({super.key, required String usuario});
+class Screen4 extends StatefulWidget {
+  const Screen4({super.key, required this.usuario});
+  final String usuario;
 
   @override
+  State<Screen4> createState() => _Screen4State();
+}
+
+class _Screen4State extends State<Screen4> {
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "Pantalla 4 (Notificaciones)",
-        style: TextStyle(fontSize: 30),
+    return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('cancelaciones_pendientes').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+
+          final cancelaciones = snapshot.data!.docs;
+
+          if (cancelaciones.isEmpty) {
+            return const Center(child: Text("No hay notificaciones pendientes."));
+          }
+
+          return ListView.builder(
+            itemCount: cancelaciones.length,
+            itemBuilder: (context, index) {
+              final doc = cancelaciones[index];
+              final data = doc.data() as Map<String, dynamic>;
+              final fecha = data['fecha'] != null && data['fecha'] is Timestamp
+                  ? DateFormat('dd/MM/yyyy').format((data['fecha'] as Timestamp).toDate())
+                  : 'Sin fecha';
+
+              return Card(
+                margin: const EdgeInsets.all(8),
+                color: Colors.amber[100],
+                child: ListTile(
+                  title: Text("Solicitud de cancelación"),
+                  subtitle: Text(
+                    "Usuario: ${data['usuario']}\n"
+                    "Motivo: ${data['motivo']}\n"
+                    "Fecha: $fecha\n"
+                    "Horario: ${data['horario'] ?? 'N/A'}\n"
+                    "Servicio: ${data['servicio'] ?? 'N/A'}"
+                  ),
+                  isThreeLine: true,
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.check, color: Colors.green),
+                        onPressed: () async {
+                           try {
+    final citaId = doc['idCita'];
+
+    // 1. Eliminar la cita original
+    await FirebaseFirestore.instance
+        .collection('agregar')
+        .doc(citaId)
+        .delete();
+
+    // 2. Eliminar la notificación
+    await FirebaseFirestore.instance
+        .collection('cancelaciones_pendientes')
+        .doc(doc.id)
+        .delete();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Cita cancelada y notificación eliminada')),
+    );
+  } catch (e) {
+    print('Error al eliminar cita: $e');
+  }
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.red),
+                        onPressed: () async {
+                          await FirebaseFirestore.instance.collection('cancelaciones_pendientes').doc(doc.id).delete();
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Cancelación rechazada")));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

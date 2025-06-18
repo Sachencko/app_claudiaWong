@@ -13,22 +13,111 @@ class Agregar extends StatefulWidget {
 }
 
 class _AgregarState extends State<Agregar> {
+  String generarCodigoAleatorio() {
+  final random = DateTime.now().millisecondsSinceEpoch.remainder(1000000);
+  return random.toString().padLeft(6, '0');
+}
   final Map<String, List<Map<String, dynamic>>> serviciosPorCategoria = {
     "TRATAMIENTOS FACIALES": [
-      {"nombre": "Limpieza facial profunda", "precio": 50, "img": "assets/facial1.png"},
-      {"nombre": "Exfoliación facial", "precio": 35, "img": "assets/facial2.png"},
+      {
+        "nombre": "Limpieza facial profunda",
+        "precio": 75,
+        "img": "assets/facial1.png",
+      },
+      {
+        "nombre": "Limpieza facial basica",
+        "precio": 35,
+        "img": "assets/facial2.png",
+      },
     ],
     "ESTÉTICA FACIAL": [
-      {"nombre": "Diseño de cejas", "precio": 40, "img": "assets/estetica1.png"},
-      {"nombre": "Laminado de cejas", "precio": 50, "img": "assets/estetica2.png"},
+      {
+        "nombre": "Depilación de rostro (con cera)",
+        "precio": 40,
+        "img": "assets/estetica1.png",
+      },
+      {
+        "nombre": "Visagismo de cejas y depilacion con cera",
+        "precio": 25,
+        "img": "assets/estetica2.png",
+      },
+      {
+        "nombre": "Lifting de pestañas",
+        "precio": 55,
+        "img": "assets/estetica3.png",
+      },
+      {
+        "nombre": "Laminado de cejas",
+        "precio": 60,
+        "img": "assets/estetica4.png",
+      },
     ],
     "MANICURE": [
-      {"nombre": "Esmaltado gel", "precio": 30, "img": "assets/mani1.png"},
-      {"nombre": "Uñas acrílicas", "precio": 55, "img": "assets/mani2.png"},
+      {"nombre": "Esmaltado gel", 
+      "precio": 35, 
+      "img": "assets/mani1.png"
+      },
+      {"nombre": "Esmaltado semipermanente", 
+      "precio": 30, 
+      "img": "assets/mani2.png"
+      },
+      {"nombre": "Uñas poligel", 
+      "precio": 40, 
+      "img": "assets/mani3.png"
+      },
+      {"nombre": "Uñas acrílicas", 
+      "precio": 65, 
+      "img": "assets/mani4.png"
+      },
+      {"nombre": "Capping con acrilico", 
+      "precio": 60, 
+      "img": "assets/mani5.png"
+      },
+      {"nombre": "Cromados y relieves", 
+      "precio": 50, 
+      "img": "assets/mani6.png"
+      },
+      {"nombre": "Manicure francesa", 
+      "precio": 30, 
+      "img": "assets/mani7.png"
+      },
+      {"nombre": "Efecto ojo de gato", 
+      "precio": 45, 
+      "img": "assets/mani8.png"
+      },
+      {"nombre": "Efecto espejo", 
+      "precio": 40, 
+      "img": "assets/mani9.png"
+      },
+      {"nombre": "Tecnica baby boomer", 
+      "precio": 45, 
+      "img": "assets/mani10.png"
+      },
+      {"nombre": "Tecnica rubber", 
+      "precio": 40, 
+      "img": "assets/mani11.png"
+      },
+      {"nombre": "Diseño tribal", 
+      "precio": 35, 
+      "img": "assets/mani12.png"
+      },
     ],
     "MASAJES": [
-      {"nombre": "Masaje relajante", "precio": 60, "img": "assets/masaje1.png"},
-      {"nombre": "Masaje con piedras", "precio": 75, "img": "assets/masaje2.png"},
+      {
+      "nombre": "Masaje relajante y Aromaterapia", 
+      "precio": 65, 
+      "img": "assets/masaje1.png"
+      },
+      {
+        "nombre": "Masoterapia, piedras calientes, Tens y pistola de percusion. 1hr",
+        "precio": 75,
+        "img": "assets/masaje2.png",
+      },
+      {
+        "nombre": "Masoterapia, piedras calientes, Tens y pistola de percusion. 2hr",
+        "precio": 100,
+        "img": "assets/masaje3.png",
+      },
     ],
   };
 
@@ -107,7 +196,10 @@ class _AgregarState extends State<Agregar> {
 
     setState(() {
       mostrarConfirmacion = true;
-      total = seleccionFinal.fold(0, (sum, item) => sum + item['precio'] as int);
+      total = seleccionFinal.fold(
+        0,
+        (sum, item) => sum + item['precio'] as int,
+      );
     });
   }
 
@@ -133,6 +225,7 @@ class _AgregarState extends State<Agregar> {
     if (currentUser == null) return;
 
     final docRef = FirebaseFirestore.instance.collection("agregar").doc();
+    final codigo = generarCodigoAleatorio();
 
     await docRef.set({
       "id": docRef.id,
@@ -146,6 +239,7 @@ class _AgregarState extends State<Agregar> {
       "tipo_pago": tipoPago,
       "creado": Timestamp.now(),
       "total": total,
+      "codigo": codigo,
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -155,23 +249,33 @@ class _AgregarState extends State<Agregar> {
     Navigator.pop(context);
   }
 
-  Widget buildCategoria(String categoria, List<Map<String, dynamic>> servicios) {
+  Widget buildCategoria(
+    String categoria,
+    List<Map<String, dynamic>> servicios,
+  ) {
     return ExpansionTile(
       backgroundColor: const Color.fromARGB(255, 240, 222, 190),
       collapsedBackgroundColor: Colors.white,
-      title: Text(categoria, style: const TextStyle(fontWeight: FontWeight.bold)),
-      children: servicios.map((servicio) {
-        final seleccionado = serviciosSeleccionados[categoria]!.contains(servicio['nombre']);
-        return ListTile(
-          leading: Image.asset(servicio['img'], width: 40, height: 40),
-          title: Text(servicio['nombre']),
-          subtitle: Text("S/. ${servicio['precio']}"),
-          trailing: Checkbox(
-            value: seleccionado,
-            onChanged: (_) => toggleServicio(categoria, servicio['nombre']),
-          ),
-        );
-      }).toList(),
+      title: Text(
+        categoria,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      children:
+          servicios.map((servicio) {
+            final seleccionado = serviciosSeleccionados[categoria]!.contains(
+              servicio['nombre'],
+            );
+            return ListTile(
+              leading: Image.asset(servicio['img'], width: 40, height: 40),
+              title: Text(servicio['nombre']),
+              subtitle: Text("S/. ${servicio['precio']}"),
+              trailing: Checkbox(
+                activeColor: const Color.fromARGB(255, 206, 172, 69),
+                value: seleccionado,
+                onChanged: (_) => toggleServicio(categoria, servicio['nombre']),
+              ),
+            );
+          }).toList(),
     );
   }
 
@@ -179,194 +283,188 @@ class _AgregarState extends State<Agregar> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 215, 186),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 255, 255, 255),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black,
-                offset: Offset(0.0, 0.0),
-                blurRadius: 4.0,
+      appBar: AppBar(
+  backgroundColor: Colors.white,
+  elevation: 4,
+  iconTheme: const IconThemeData(color: Colors.black),
+  centerTitle: true,
+  title: Image.asset(
+    "assets/claudiaLogin.png",
+    height: 50,
+  ),
+),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(12),
+          children: [
+            ListTile(
+              title: const Text("Seleccionar Fecha"),
+              subtitle: Text(
+                fechaSeleccionada != null
+                    ? DateFormat('dd/MM/yyyy').format(fechaSeleccionada!)
+                    : "No seleccionada",
               ),
-            ],
-          ),
-          padding: const EdgeInsets.only(top: 25),
-          alignment: Alignment.center,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Image.asset("assets/claudiaLogin.png"),
-              ),
-              Positioned(
-                right: 0,
-                child: IconButton(
-                  color: Colors.red,
-                  iconSize: 30,
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder:
-                          (context) => AlertDialog(
-                            actions: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(
-                                    255,
-                                    214,
-                                    29,
-                                    16,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Login(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  "Si",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: const Color.fromARGB(
-                                      255,
-                                      255,
-                                      255,
-                                      255,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey[800],
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  "No",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: const Color.fromARGB(
-                                      255,
-                                      255,
-                                      255,
-                                      255,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                            content: Text(
-                              "¿Seguro deseas cerrar sesion?",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ),
-                    );
-                    //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
-                    print('SESION SALIDA');
-                  },
-                  icon: Icon(Icons.exit_to_app),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(12),
-        children: [
-          ListTile(
-            title: const Text("Seleccionar Fecha"),
-            subtitle: Text(fechaSeleccionada != null
-                ? DateFormat('dd/MM/yyyy').format(fechaSeleccionada!)
-                : "No seleccionada"),
-            trailing: const Icon(Icons.calendar_today),
-            onTap: seleccionarFecha,
-          ),
-          const SizedBox(height: 10),
-          const Text("Seleccionar Horario", style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 10,
-            children: horarios.map((h) {
-              return ChoiceChip(
-                color: MaterialStateProperty.all(const Color.fromARGB(255, 228, 186, 61)),
-                label: Text(h, style: TextStyle(color: Colors.black),),
-                selected: horarioSeleccionado == h,
-                onSelected: (_) {
-                  setState(() {
-                    horarioSeleccionado = h;
-                  });
-                },
-              );
-            }).toList(),
-          ),
-          const Divider(height: 30),
-          ...serviciosPorCategoria.entries.map((e) => buildCategoria(e.key, e.value)).toList(),
-          if (mostrarConfirmacion) ...[
-            const SizedBox(height: 20),
-            const Text("Para separar tu cita es necesario realizar un adelanto de S/.10", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text("SERVICIOS SELECCIONADOS", style: TextStyle(fontWeight: FontWeight.bold)),
-                  ...serviciosPorCategoria.entries.expand((entry) => entry.value.where((s) => serviciosSeleccionados[entry.key]!.contains(s['nombre'])).map((s) => Text("- ${s['nombre']}  S/. ${s['precio']}"))).toList(),
-                  const SizedBox(height: 10),
-                  Text("Total a pagar: S/. $total", style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10),
-                  Image.asset("assets/qr_yape.png", width: 200),
-                  const Text("CLAUDIA WONG ARIAS\n987654321", textAlign: TextAlign.center),
-                  const SizedBox(height: 10),
-                  DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(labelText: "Confirmación de pago"),
-                    value: tipoPago.isEmpty ? null : tipoPago,
-                    items: const [
-                      DropdownMenuItem(value: "adelanto", child: Text("Pago por adelanto - reserva de cita (S/10)")),
-                      DropdownMenuItem(value: "completo", child: Text("Pago por servicio completo")),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        tipoPago = value ?? '';
-                      });
-                    },
-                  ),
-                  CheckboxListTile(
-                    value: pagoConfirmado,
-                    onChanged: (value) {
-                      setState(() {
-                        pagoConfirmado = value ?? false;
-                      });
-                    },
-                    title: const Text("He realizado el pago"),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: finalizar,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: const Text("Finalizar", style: TextStyle(fontSize: 18, color: Colors.white)),
-                  ),
-                ],
-              ),
+              trailing: const Icon(Icons.calendar_today),
+              onTap: seleccionarFecha,
             ),
-          ]
-        ],
+            const SizedBox(height: 10),
+            const Text(
+              "Seleccionar Horario",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 10,
+              children:
+                  horarios.map((h) {
+                    return ChoiceChip(
+                      label: Text(
+                        h,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      selected: horarioSeleccionado == h,
+                      onSelected: (_) {
+                        setState(() {
+                          horarioSeleccionado = h;
+                        });
+                      },
+                      selectedColor: const Color.fromARGB(255, 204, 173, 48),
+                      backgroundColor: const Color.fromARGB(255, 228, 186, 61),
+                    );
+                  }).toList(),
+            ),
+            const Divider(height: 30),
+            ...serviciosPorCategoria.entries
+                .map((e) => buildCategoria(e.key, e.value))
+                .toList(),
+            if (mostrarConfirmacion) ...[
+              const SizedBox(height: 20),
+              const Text(
+                "Para separar tu cita es necesario realizar un adelanto de S/.10",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+                textScaleFactor: 1.0,
+              ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "SERVICIOS SELECCIONADOS",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      textScaleFactor: 1.0,
+                    ),
+                    const SizedBox(height: 8),
+                    ...serviciosPorCategoria.entries
+                        .expand(
+                          (entry) => entry.value
+                              .where(
+                                (s) => serviciosSeleccionados[entry.key]!
+                                    .contains(s['nombre']),
+                              )
+                              .map(
+                                (s) => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 2,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          "- ${s['nombre']}",
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          textScaleFactor: 1.0,
+                                        ),
+                                      ),
+                                      Text(
+                                        "S/. ${s['precio']}",
+                                        textScaleFactor: 1.0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                        )
+                        .toList(),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Total a pagar: S/. $total",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      textScaleFactor: 1.0,
+                    ),
+                    const SizedBox(height: 10),
+                    Image.asset("assets/yape.jpg", width: 200),
+                    const Text(
+                      "CLAUDIA WONG ARIAS\n987654321",
+                      textAlign: TextAlign.center,
+                      textScaleFactor: 1.0,
+                    ),
+                    const SizedBox(height: 10),
+                    DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
+                        labelText: "Confirmación de pago",
+                      ),
+                      value: tipoPago.isEmpty ? null : tipoPago,
+                      items: const [
+                        DropdownMenuItem(
+                          value: "adelanto",
+                          child: Text(
+                            "Pago por adelanto - reserva de cita (S/10)",
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "completo",
+                          child: Text("Pago por servicio completo"),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          tipoPago = value ?? '';
+                        });
+                      },
+                    ),
+                    CheckboxListTile(
+                      value: pagoConfirmado,
+                      onChanged: (value) {
+                        setState(() {
+                          pagoConfirmado = value ?? false;
+                        });
+                      },
+                      title: const Text(
+                        "He realizado el pago",
+                        textScaleFactor: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: 
+                    ElevatedButton(
+                      onPressed: finalizar,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple,
+                      ),
+                      child: const Text(
+                        "Finalizar",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -376,7 +474,10 @@ class _AgregarState extends State<Agregar> {
             padding: const EdgeInsets.symmetric(vertical: 16),
           ),
           onPressed: mostrarConfirmacion ? null : irAPago,
-          child: const Text("Confirmar", style: TextStyle(fontSize: 18, color: Colors.white)),
+          child: const Text(
+            "Confirmar",
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
         ),
       ),
     );

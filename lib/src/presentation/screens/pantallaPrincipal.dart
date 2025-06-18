@@ -320,18 +320,25 @@ class Screen1 extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+      floatingActionButton: FloatingActionButton.extended(
+      onPressed: () {
+         Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => Agregar(usuario: usuario),
             ),
           );
-        },
-        backgroundColor: Colors.black,
-        child: const Icon(Icons.add, color: Colors.white),
+      },
+      backgroundColor: const Color.fromARGB(255, 219, 172, 31),
+      icon: const Icon(Icons.add, color: Colors.black),
+      label: const Text(
+        "Añadir Cita",
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
       ),
+    ),
     );
   }
 }

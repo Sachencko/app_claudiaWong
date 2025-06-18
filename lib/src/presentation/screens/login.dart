@@ -44,10 +44,11 @@ class _LoginState extends State<Login> {
           .signInWithEmailAndPassword(email: correo, password: pass);
       String uid = userCredential.user!.uid;
 
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('usuarios')
-          .doc(uid)
-          .get();
+      DocumentSnapshot userDoc =
+          await FirebaseFirestore.instance
+              .collection('usuarios')
+              .doc(uid)
+              .get();
 
       if (!userDoc.exists) {
         throw 'No se encontró información del usuario en Firestore.';
@@ -72,6 +73,18 @@ class _LoginState extends State<Login> {
           ),
         );
       } else {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return const Center(child: CircularProgressIndicator());
+          },
+        );
+
+        await Future.delayed(Duration(seconds: 1));
+
+        Navigator.of(context).pop();
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -100,17 +113,11 @@ class _LoginState extends State<Login> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(mensaje),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(mensaje), backgroundColor: Colors.red),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
       );
     }
   }
@@ -195,7 +202,9 @@ class _LoginState extends State<Login> {
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscureText ? Icons.visibility : Icons.visibility_off,
+                            _obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: Colors.white,
                           ),
                           onPressed: _togglePasswordVisibility,
@@ -214,20 +223,34 @@ class _LoginState extends State<Login> {
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _selectedRole,
-                        icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                        ),
                         dropdownColor: const Color(0xFF424242),
-                        items: ['Usuario', 'Cuenta de administrador']
-                            .map((role) => DropdownMenuItem<String>(
-                                  value: role,
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.person, color: Colors.white),
-                                      const SizedBox(width: 8),
-                                      Text(role, style: const TextStyle(color: Colors.white)),
-                                    ],
+                        items:
+                            ['Usuario', 'Cuenta de administrador']
+                                .map(
+                                  (role) => DropdownMenuItem<String>(
+                                    value: role,
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.person,
+                                          color: Colors.white,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          role,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ))
-                            .toList(),
+                                )
+                                .toList(),
                         onChanged: (value) {
                           setState(() {
                             _selectedRole = value!;
@@ -248,7 +271,12 @@ class _LoginState extends State<Login> {
                     child: ElevatedButton(
                       onPressed: loginUser,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 248, 200, 40),
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          248,
+                          200,
+                          40,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
@@ -264,12 +292,15 @@ class _LoginState extends State<Login> {
                     width: 315,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: _selectedRole == 'Usuario'
-                          ? () => Navigator.pushReplacement(
+                      onPressed:
+                          _selectedRole == 'Usuario'
+                              ? () => Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => Registro()),
+                                MaterialPageRoute(
+                                  builder: (context) => Registro(),
+                                ),
                               )
-                          : null,
+                              : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[800],
                         shape: RoundedRectangleBorder(
@@ -279,7 +310,9 @@ class _LoginState extends State<Login> {
                       child: Text(
                         "Registrarse",
                         style: TextStyle(
-                          color: Colors.white.withOpacity(_selectedRole == 'Usuario' ? 1.0 : 0.5),
+                          color: Colors.white.withOpacity(
+                            _selectedRole == 'Usuario' ? 1.0 : 0.5,
+                          ),
                           fontSize: 18,
                         ),
                       ),

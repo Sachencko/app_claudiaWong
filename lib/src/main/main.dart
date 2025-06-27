@@ -1,6 +1,4 @@
 import 'package:claudia_wong_app/src/presentation/screens/PantallaCarga.dart';
-import 'package:claudia_wong_app/src/presentation/screens/agregar.dart';
-import 'package:claudia_wong_app/src/presentation/screens/login.dart';
 import 'package:claudia_wong_app/src/presentation/screens/pantallaPrincipal.dart';
 import 'package:claudia_wong_app/src/presentation/screens/pantallaPrincipalAdmin.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +24,9 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('es', ''),
-        Locale('en', ''),
-      ],
-      
-      home: PantallaCarga());
+      supportedLocales: const [Locale('es', ''), Locale('en', '')],
+
+      home: PantallaCarga(),
+    );
   }
 }

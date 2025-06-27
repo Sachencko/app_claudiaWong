@@ -13,10 +13,14 @@ class Agregar extends StatefulWidget {
 }
 
 class _AgregarState extends State<Agregar> {
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _pagoKey = GlobalKey();
+
   String generarCodigoAleatorio() {
-  final random = DateTime.now().millisecondsSinceEpoch.remainder(1000000);
-  return random.toString().padLeft(6, '0');
-}
+    final random = DateTime.now().millisecondsSinceEpoch.remainder(1000000);
+    return random.toString().padLeft(6, '0');
+  }
+
   final Map<String, List<Map<String, dynamic>>> serviciosPorCategoria = {
     "TRATAMIENTOS FACIALES": [
       {
@@ -53,68 +57,50 @@ class _AgregarState extends State<Agregar> {
       },
     ],
     "MANICURE": [
-      {"nombre": "Esmaltado gel", 
-      "precio": 35, 
-      "img": "assets/mani1.png"
+      {"nombre": "Esmaltado gel", "precio": 35, "img": "assets/mani1.png"},
+      {
+        "nombre": "Esmaltado semipermanente",
+        "precio": 30,
+        "img": "assets/mani2.png",
       },
-      {"nombre": "Esmaltado semipermanente", 
-      "precio": 30, 
-      "img": "assets/mani2.png"
+      {"nombre": "Uñas poligel", "precio": 40, "img": "assets/mani3.png"},
+      {"nombre": "Uñas acrílicas", "precio": 65, "img": "assets/mani4.png"},
+      {
+        "nombre": "Capping con acrilico",
+        "precio": 60,
+        "img": "assets/mani5.png",
       },
-      {"nombre": "Uñas poligel", 
-      "precio": 40, 
-      "img": "assets/mani3.png"
+      {
+        "nombre": "Cromados y relieves",
+        "precio": 50,
+        "img": "assets/mani6.png",
       },
-      {"nombre": "Uñas acrílicas", 
-      "precio": 65, 
-      "img": "assets/mani4.png"
+      {"nombre": "Manicure francesa", "precio": 30, "img": "assets/mani7.png"},
+      {"nombre": "Efecto ojo de gato", "precio": 45, "img": "assets/mani8.png"},
+      {"nombre": "Efecto espejo", "precio": 40, "img": "assets/mani9.png"},
+      {
+        "nombre": "Tecnica baby boomer",
+        "precio": 45,
+        "img": "assets/mani10.png",
       },
-      {"nombre": "Capping con acrilico", 
-      "precio": 60, 
-      "img": "assets/mani5.png"
-      },
-      {"nombre": "Cromados y relieves", 
-      "precio": 50, 
-      "img": "assets/mani6.png"
-      },
-      {"nombre": "Manicure francesa", 
-      "precio": 30, 
-      "img": "assets/mani7.png"
-      },
-      {"nombre": "Efecto ojo de gato", 
-      "precio": 45, 
-      "img": "assets/mani8.png"
-      },
-      {"nombre": "Efecto espejo", 
-      "precio": 40, 
-      "img": "assets/mani9.png"
-      },
-      {"nombre": "Tecnica baby boomer", 
-      "precio": 45, 
-      "img": "assets/mani10.png"
-      },
-      {"nombre": "Tecnica rubber", 
-      "precio": 40, 
-      "img": "assets/mani11.png"
-      },
-      {"nombre": "Diseño tribal", 
-      "precio": 35, 
-      "img": "assets/mani12.png"
-      },
+      {"nombre": "Tecnica rubber", "precio": 40, "img": "assets/mani11.png"},
+      {"nombre": "Diseño tribal", "precio": 35, "img": "assets/mani12.png"},
     ],
     "MASAJES": [
       {
-      "nombre": "Masaje relajante y Aromaterapia", 
-      "precio": 65, 
-      "img": "assets/masaje1.png"
+        "nombre": "Masaje relajante y Aromaterapia",
+        "precio": 65,
+        "img": "assets/masaje1.png",
       },
       {
-        "nombre": "Masoterapia, piedras calientes, Tens y pistola de percusion. 1hr",
+        "nombre":
+            "Masoterapia, piedras calientes, Tens y pistola de percusion. 1hr",
         "precio": 75,
         "img": "assets/masaje2.png",
       },
       {
-        "nombre": "Masoterapia, piedras calientes, Tens y pistola de percusion. 2hr",
+        "nombre":
+            "Masoterapia, piedras calientes, Tens y pistola de percusion. 2hr",
         "precio": 100,
         "img": "assets/masaje3.png",
       },
@@ -128,6 +114,7 @@ class _AgregarState extends State<Agregar> {
   bool pagoConfirmado = false;
   String tipoPago = '';
   int total = 0;
+  final int maxServiciosPermitidos = 4;
 
   final List<String> horarios = [
     "9:00 a.m",
@@ -136,6 +123,8 @@ class _AgregarState extends State<Agregar> {
     "2:00 p.m",
     "3:00 p.m",
   ];
+
+  Set<String> horariosOcupados = {};
 
   @override
   void initState() {
@@ -146,10 +135,25 @@ class _AgregarState extends State<Agregar> {
   }
 
   void toggleServicio(String categoria, String nombre) {
+    final totalSeleccionados = serviciosSeleccionados.values.fold(
+      0,
+      (sum, set) => sum + set.length,
+    );
+
     setState(() {
       if (serviciosSeleccionados[categoria]!.contains(nombre)) {
         serviciosSeleccionados[categoria]!.remove(nombre);
       } else {
+        if (totalSeleccionados >= maxServiciosPermitidos) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                "Solo puedes seleccionar hasta $maxServiciosPermitidos servicios.",
+              ),
+            ),
+          );
+          return;
+        }
         serviciosSeleccionados[categoria]!.add(nombre);
       }
     });
@@ -162,14 +166,33 @@ class _AgregarState extends State<Agregar> {
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(Duration(days: 365)),
     );
+
     if (picked != null) {
+      final fechaInicio = DateTime(picked.year, picked.month, picked.day);
+      final fechaFin = fechaInicio.add(const Duration(days: 1));
+
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection("agregar")
+              .where(
+                "fecha",
+                isGreaterThanOrEqualTo: Timestamp.fromDate(fechaInicio),
+              )
+              .where("fecha", isLessThan: Timestamp.fromDate(fechaFin))
+              .get();
+
+      final ocupados =
+          snapshot.docs.map((doc) => doc['horario'] as String).toSet();
+
       setState(() {
         fechaSeleccionada = picked;
+        horariosOcupados = ocupados;
+        horarioSeleccionado = null;
       });
     }
   }
 
-  void irAPago() {
+  void irAPago() async {
     final seleccionFinal = <Map<String, dynamic>>[];
 
     serviciosPorCategoria.forEach((categoria, servicios) {
@@ -201,6 +224,14 @@ class _AgregarState extends State<Agregar> {
         (sum, item) => sum + item['precio'] as int,
       );
     });
+
+    // Esperar a que se construya el widget y luego hacer scroll con animación
+    await Future.delayed(const Duration(milliseconds: 300));
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeInOutCubic,
+    );
   }
 
   void finalizar() async {
@@ -284,17 +315,15 @@ class _AgregarState extends State<Agregar> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 215, 186),
       appBar: AppBar(
-  backgroundColor: Colors.white,
-  elevation: 4,
-  iconTheme: const IconThemeData(color: Colors.black),
-  centerTitle: true,
-  title: Image.asset(
-    "assets/claudiaLogin.png",
-    height: 50,
-  ),
-),
+        backgroundColor: Colors.white,
+        elevation: 4,
+        iconTheme: const IconThemeData(color: Colors.black),
+        centerTitle: true,
+        title: Image.asset("assets/claudiaLogin.png", height: 50),
+      ),
       body: SafeArea(
         child: ListView(
+          controller: _scrollController,
           padding: const EdgeInsets.all(12),
           children: [
             ListTile(
@@ -323,13 +352,17 @@ class _AgregarState extends State<Agregar> {
                         style: const TextStyle(color: Colors.black),
                       ),
                       selected: horarioSeleccionado == h,
-                      onSelected: (_) {
-                        setState(() {
-                          horarioSeleccionado = h;
-                        });
-                      },
                       selectedColor: const Color.fromARGB(255, 204, 173, 48),
                       backgroundColor: const Color.fromARGB(255, 228, 186, 61),
+                      disabledColor: Colors.grey.shade400,
+                      onSelected:
+                          horariosOcupados.contains(h)
+                              ? null
+                              : (_) {
+                                setState(() {
+                                  horarioSeleccionado = h;
+                                });
+                              },
                     );
                   }).toList(),
             ),
@@ -345,10 +378,10 @@ class _AgregarState extends State<Agregar> {
                   color: Colors.red,
                   fontWeight: FontWeight.bold,
                 ),
-                textScaleFactor: 1.0,
               ),
               const SizedBox(height: 10),
               Container(
+                key: _pagoKey,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -360,53 +393,37 @@ class _AgregarState extends State<Agregar> {
                     const Text(
                       "SERVICIOS SELECCIONADOS",
                       style: TextStyle(fontWeight: FontWeight.bold),
-                      textScaleFactor: 1.0,
                     ),
                     const SizedBox(height: 8),
-                    ...serviciosPorCategoria.entries
-                        .expand(
-                          (entry) => entry.value
-                              .where(
-                                (s) => serviciosSeleccionados[entry.key]!
-                                    .contains(s['nombre']),
-                              )
-                              .map(
-                                (s) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 2,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          "- ${s['nombre']}",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          textScaleFactor: 1.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        "S/. ${s['precio']}",
-                                        textScaleFactor: 1.0,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                    ...serviciosPorCategoria.entries.expand((entry) {
+                      return entry.value
+                          .where((s) {
+                            return serviciosSeleccionados[entry.key]!.contains(
+                              s['nombre'],
+                            );
+                          })
+                          .map((s) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Row(
+                                children: [
+                                  Expanded(child: Text("- ${s['nombre']}")),
+                                  Text("S/. ${s['precio']}"),
+                                ],
                               ),
-                        )
-                        .toList(),
+                            );
+                          });
+                    }).toList(),
                     const SizedBox(height: 10),
                     Text(
                       "Total a pagar: S/. $total",
                       style: const TextStyle(fontWeight: FontWeight.bold),
-                      textScaleFactor: 1.0,
                     ),
                     const SizedBox(height: 10),
                     Image.asset("assets/yape.jpg", width: 200),
                     const Text(
                       "CLAUDIA WONG ARIAS\n987654321",
                       textAlign: TextAlign.center,
-                      textScaleFactor: 1.0,
                     ),
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String>(
@@ -439,25 +456,21 @@ class _AgregarState extends State<Agregar> {
                           pagoConfirmado = value ?? false;
                         });
                       },
-                      title: const Text(
-                        "He realizado el pago",
-                        textScaleFactor: 1.0,
-                      ),
+                      title: const Text("He realizado el pago"),
                     ),
                     const SizedBox(height: 10),
                     SizedBox(
                       width: double.infinity,
-                      child: 
-                    ElevatedButton(
-                      onPressed: finalizar,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
+                      child: ElevatedButton(
+                        onPressed: finalizar,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                        ),
+                        child: const Text(
+                          "Finalizar",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
                       ),
-                      child: const Text(
-                        "Finalizar",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                    ),
                     ),
                   ],
                 ),

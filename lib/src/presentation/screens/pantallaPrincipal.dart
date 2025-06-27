@@ -238,12 +238,13 @@ class Screen1 extends StatelessWidget {
           const SizedBox(width: 12, height: 12),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('agregar')
-                  .where('usuario', isEqualTo: usuario)
-                  //.where('estado', isEqualTo: 'activa') // 👉 ahora solo citas activas
-                  .orderBy('fecha', descending: true)
-                  .snapshots(),
+              stream:
+                  FirebaseFirestore.instance
+                      .collection('agregar')
+                      .where('usuario', isEqualTo: usuario)
+                      //.where('estado', isEqualTo: 'activa') // 👉 ahora solo citas activas
+                      .orderBy('fecha', descending: true)
+                      .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -307,7 +308,7 @@ class Screen1 extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: color,
-                            fontSize: 15
+                            fontSize: 15,
                           ),
                         ),
                         isThreeLine: true,
@@ -321,28 +322,22 @@ class Screen1 extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-      onPressed: () {
-         Navigator.push(
+        onPressed: () {
+          Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => Agregar(usuario: usuario),
-            ),
+            MaterialPageRoute(builder: (context) => Agregar(usuario: usuario)),
           );
-      },
-      backgroundColor: const Color.fromARGB(255, 219, 172, 31),
-      icon: const Icon(Icons.add, color: Colors.black),
-      label: const Text(
-        "Añadir Cita",
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
+        },
+        backgroundColor: const Color.fromARGB(255, 219, 172, 31),
+        icon: const Icon(Icons.add, color: Colors.black),
+        label: const Text(
+          "Añadir Cita",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
-    ),
     );
   }
 }
-
 
 class Screen2 extends StatefulWidget {
   const Screen2({super.key, required this.usuario});
@@ -363,7 +358,12 @@ class _Screen2State extends State<Screen2> {
   }
 
   void cargarCitas() async {
-    final query = await FirebaseFirestore.instance.collection("agregar").where('usuario', isEqualTo: widget.usuario).orderBy('fecha', descending: true).get();
+    final query =
+        await FirebaseFirestore.instance
+            .collection("agregar")
+            .where('usuario', isEqualTo: widget.usuario)
+            .orderBy('fecha', descending: true)
+            .get();
 
     setState(() {
       citas = query.docs;
@@ -371,87 +371,95 @@ class _Screen2State extends State<Screen2> {
   }
 
   void cancelarCitaConfirmada() async {
-  String motivo = "";
+    String motivo = "";
 
-  await showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text("¿Seguro deseas cancelar la cita?"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Motivo:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            onChanged: (value) => motivo = value,
-            decoration: const InputDecoration(
-              hintText: "Escribe el motivo",
-              border: OutlineInputBorder(),
+    await showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text("¿Seguro deseas cancelar la cita?"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Motivo:",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  onChanged: (value) => motivo = value,
+                  decoration: const InputDecoration(
+                    hintText: "Escribe el motivo",
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 2,
+                ),
+              ],
             ),
-            maxLines: 2,
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                child: const Text("No", style: TextStyle(color: Colors.white)),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (motivo.trim().isEmpty || citaSeleccionada == null) return;
+
+                  // Obtener datos de la cita
+                  final citaData =
+                      citaSeleccionada!.data() as Map<String, dynamic>;
+
+                  // 1. Guardar en colección de cancelaciones
+                  await FirebaseFirestore.instance
+                      .collection("cancelaciones_pendientes")
+                      .add({
+                        "idCita": citaSeleccionada!.id,
+                        "usuario": citaSeleccionada!['usuario'],
+                        "servicio": citaSeleccionada!['servicio'],
+                        "fecha": citaSeleccionada!['fecha'],
+                        "horario": citaSeleccionada!['horario'],
+                        "motivo": motivo,
+                        "estado": "pendiente",
+                        "solicitadoEl": Timestamp.now(),
+                      });
+
+                  // 2. Eliminar la cita
+                  await FirebaseFirestore.instance
+                      .collection("agregar")
+                      .doc(citaSeleccionada!.id);
+
+                  // 3. Refrescar lista
+                  setState(() {
+                    citas.remove(citaSeleccionada);
+                    citaSeleccionada = null;
+                  });
+
+                  // 4. Mostrar mensaje
+                  Navigator.pop(context);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Se envió notificación al administrador"),
+                    ),
+                  );
+
+                  setState(() {
+                    citaSeleccionada = null; // Desmarcar la selección
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 219, 172, 31),
+                ),
+                child: const Text("Sí", style: TextStyle(color: Colors.white)),
+              ),
+            ],
           ),
-        ],
-      ),
-      actions: [
-        ElevatedButton(
-          onPressed: () => Navigator.pop(context),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-          child: const Text("No", style: TextStyle(color: Colors.white)),
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            if (motivo.trim().isEmpty || citaSeleccionada == null) return;
-
-            // Obtener datos de la cita
-            final citaData = citaSeleccionada!.data() as Map<String, dynamic>;
-
-            // 1. Guardar en colección de cancelaciones
-            await FirebaseFirestore.instance.collection("cancelaciones_pendientes").add({
-  "idCita": citaSeleccionada!.id,
-  "usuario": citaSeleccionada!['usuario'],
-  "servicio": citaSeleccionada!['servicio'],
-  "fecha": citaSeleccionada!['fecha'],
-  "horario": citaSeleccionada!['horario'],
-  "motivo": motivo,
-  "estado": "pendiente",
-  "solicitadoEl": Timestamp.now(),
-});
-
-            // 2. Eliminar la cita
-            await FirebaseFirestore.instance
-                .collection("agregar")
-                .doc(citaSeleccionada!.id);
-
-            // 3. Refrescar lista
-            setState(() {
-              citas.remove(citaSeleccionada);
-              citaSeleccionada = null;
-            });
-
-
-            // 4. Mostrar mensaje
-            Navigator.pop(context);
-
-ScaffoldMessenger.of(context).showSnackBar(
-  const SnackBar(content: Text("Se envió notificación al administrador")),
-);
-
-setState(() {
-  citaSeleccionada = null; // Desmarcar la selección
-});
-
-          },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 219, 172, 31),),
-          child: const Text("Sí", style: TextStyle(color: Colors.white)),
-        ),
-      ],
-    ),
-  );
-}
+    );
+  }
 
   Widget buildCitaItem(DocumentSnapshot cita) {
     final bool seleccionada = citaSeleccionada?.id == cita.id;
@@ -486,21 +494,37 @@ setState(() {
             children: [
               TextSpan(
                 text: "Código de Cita : $codigo\n",
-                style: const TextStyle(fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18,),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 18,
+                ),
               ),
               TextSpan(
-                text: "Fecha : ${fecha != null ? DateFormat('dd/MM/yyyy').format(fecha) : 'No disponible'}\n", style: TextStyle(fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18,)
+                text:
+                    "Fecha : ${fecha != null ? DateFormat('dd/MM/yyyy').format(fecha) : 'No disponible'}\n",
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 18,
+                ),
               ),
-              TextSpan(text: "Hora programada: $horario\n", style: TextStyle(fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18,)),
-              TextSpan(text: "Servicio : $servicio\n" ,style: TextStyle(fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18,)),
+              TextSpan(
+                text: "Hora programada: $horario\n",
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 18,
+                ),
+              ),
+              TextSpan(
+                text: "Servicio : $servicio\n",
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 18,
+                ),
+              ),
             ],
           ),
           style: const TextStyle(color: Colors.white, fontSize: 14),
@@ -510,84 +534,81 @@ setState(() {
   }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: const Color.fromARGB(255, 230, 215, 186),
-    body: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          const SizedBox(height: 6),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 73, 73, 73),
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 230, 215, 186),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 6),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 73, 73, 73),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
                 ),
-              ),
-              child: const SizedBox(
-                width: 250,
-                height: 40,
-                child: Center(
-                  child: Text(
-                    'Seleccione cita a eliminar',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: 20,
-                      color: Colors.white,
+                child: const SizedBox(
+                  width: 250,
+                  height: 40,
+                  child: Center(
+                    child: Text(
+                      'Seleccione cita a eliminar',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("agregar")
-                  .where('usuario', isEqualTo: widget.usuario)
-                  .orderBy('fecha', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            const SizedBox(height: 10),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream:
+                    FirebaseFirestore.instance
+                        .collection("agregar")
+                        .where('usuario', isEqualTo: widget.usuario)
+                        .orderBy('fecha', descending: true)
+                        .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                final docs = snapshot.data!.docs;
+                  final docs = snapshot.data!.docs;
 
-                if (docs.isEmpty) {
-                  return const Center(child: Text("No hay citas."));
-                }
+                  if (docs.isEmpty) {
+                    return const Center(child: Text("No hay citas."));
+                  }
 
-                return ListView.builder(
-                  itemCount: docs.length,
-                  itemBuilder: (context, index) =>
-                      buildCitaItem(docs[index]),
-                );
-              },
+                  return ListView.builder(
+                    itemCount: docs.length,
+                    itemBuilder: (context, index) => buildCitaItem(docs[index]),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
-    ),
-    floatingActionButton: FloatingActionButton.extended(
-      onPressed: citaSeleccionada == null ? null : cancelarCitaConfirmada,
-      backgroundColor: const Color.fromARGB(255, 219, 172, 31),
-      icon: const Icon(Icons.cancel, color: Colors.black),
-      label: const Text(
-        "Cancelar Cita",
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
+          ],
         ),
       ),
-    ),
-  );
-}
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: citaSeleccionada == null ? null : cancelarCitaConfirmada,
+        backgroundColor: const Color.fromARGB(255, 219, 172, 31),
+        icon: const Icon(Icons.cancel, color: Colors.black),
+        label: const Text(
+          "Cancelar Cita",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
 }
 
 class Screen3 extends StatefulWidget {
@@ -625,8 +646,9 @@ class _Screen3State extends State<Screen3> {
                 .where('usuario', isEqualTo: widget.usuario)
                 .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData)
+          if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }
 
           final citas = snapshot.data!.docs;
 
@@ -635,39 +657,71 @@ class _Screen3State extends State<Screen3> {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             itemCount: citas.length,
             itemBuilder: (context, index) {
               final cita = citas[index];
               final data = cita.data() as Map<String, dynamic>;
 
               String fechaStr = 'Sin fecha';
-              DateTime? fechaDateTime;
               if (data['fecha'] != null && data['fecha'] is Timestamp) {
                 final Timestamp ts = data['fecha'];
-                fechaDateTime = ts.toDate();
-                fechaStr = DateFormat('dd/MM/yyyy').format(fechaDateTime);
+                fechaStr = DateFormat('dd/MM/yyyy').format(ts.toDate());
               }
 
-              String servicioActual = data['servicio'] ?? 'No seleccionado';
+              String servicioActual = 'No seleccionado';
+              if (data['servicio'] is String) {
+                servicioActual = data['servicio'];
+              } else if (data['servicio'] is List) {
+                List<dynamic> serviciosLista = data['servicio'];
+                servicioActual = serviciosLista.join('\n- ');
+              }
+
               String horarioActual = data['horario'] ?? 'No seleccionado';
 
               return Card(
-                margin: const EdgeInsets.symmetric(vertical: 8),
+                color: const Color.fromARGB(255, 128, 128, 128),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                elevation: 5,
+                elevation: 6,
                 child: ListTile(
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Fecha: $fechaStr"),
-                      Text("Servicio: $servicioActual"),
-                      Text("Horario: $horarioActual"),
-                    ],
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
                   ),
-                  trailing: const Icon(Icons.edit, color: Colors.blue),
+                  title: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Fecha : $fechaStr\n",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 18,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "Horario : $horarioActual\n",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 18,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "Servicios:\n- $servicioActual\n",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  trailing: const Icon(Icons.edit, color: Colors.amber),
                   onTap:
                       () => _mostrarDialogoModificacion(context, cita.id, data),
                 ),
@@ -684,32 +738,17 @@ class _Screen3State extends State<Screen3> {
     String citaId,
     Map<String, dynamic> data,
   ) {
-    // No hay campo descripción editable ahora
-
-    // Fecha inicial
     DateTime selectedDate = DateTime.now();
     if (data['fecha'] != null && data['fecha'] is Timestamp) {
       selectedDate = (data['fecha'] as Timestamp).toDate();
     }
 
-    // Servicio inicial
-    final List<String> servicios = [
-      'Corte de cabello',
-      'Peinado',
-      'Manicura',
-      'Masaje',
-    ];
-
-    String servicioSeleccionado = data['servicio'] ?? servicios.first;
-
-    // Horario inicial
-    final List<String> horarios = [
-      "9:00 a.m",
-      "10:00 a.m",
-      "11:00 a.m",
-      "2:00 p.m",
-      "3:00 p.m",
-    ];
+    String servicioSeleccionado =
+        data['servicio'] is String
+            ? data['servicio']
+            : (data['servicio'] is List && data['servicio'].isNotEmpty
+                ? data['servicio'][0]
+                : servicios.first);
 
     String horarioSeleccionado = data['horario'] ?? horarios.first;
 
@@ -724,7 +763,7 @@ class _Screen3State extends State<Screen3> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Selector fecha en Card
+                    // Fecha
                     Card(
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       shape: RoundedRectangleBorder(
@@ -757,7 +796,7 @@ class _Screen3State extends State<Screen3> {
                       ),
                     ),
 
-                    // Selector servicio en Card
+                    // Servicio
                     Card(
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       shape: RoundedRectangleBorder(
@@ -765,7 +804,7 @@ class _Screen3State extends State<Screen3> {
                       ),
                       elevation: 3,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -799,7 +838,7 @@ class _Screen3State extends State<Screen3> {
                       ),
                     ),
 
-                    // Selector horario en Card
+                    // Horario
                     Card(
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       shape: RoundedRectangleBorder(
@@ -807,7 +846,7 @@ class _Screen3State extends State<Screen3> {
                       ),
                       elevation: 3,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -849,27 +888,51 @@ class _Screen3State extends State<Screen3> {
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 ElevatedButton(
-                  child: const Text('Guardar'),
+                  child: const Text('Enviar solicitud'),
                   onPressed: () async {
                     try {
+                      bool cambioEnFecha =
+                          data['fecha'] is Timestamp &&
+                          (data['fecha'] as Timestamp).toDate() != selectedDate;
+                      bool cambioEnHorario =
+                          data['horario'] != horarioSeleccionado;
+                      bool cambioEnServicio =
+                          data['servicio'] != servicioSeleccionado;
+
+                      if (!cambioEnFecha &&
+                          !cambioEnHorario &&
+                          !cambioEnServicio) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No has realizado ningún cambio.'),
+                          ),
+                        );
+                        return;
+                      }
+
                       await FirebaseFirestore.instance
-                          .collection('agregar')
-                          .doc(citaId)
-                          .update({
-                            'fecha': Timestamp.fromDate(selectedDate),
-                            'servicio': servicioSeleccionado,
-                            'horario': horarioSeleccionado,
+                          .collection('solicitudes_modificacion')
+                          .add({
+                            'citaId': citaId,
+                            'usuario': widget.usuario,
+                            'nuevaFecha': Timestamp.fromDate(selectedDate),
+                            'nuevoHorario': horarioSeleccionado,
+                            'nuevoServicio': servicioSeleccionado,
+                            'estado': 'pendiente',
+                            'creado': Timestamp.now(),
                           });
 
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Cita modificada correctamente'),
+                          content: Text('Solicitud enviada al administrador.'),
                         ),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error al guardar: $e')),
+                        SnackBar(
+                          content: Text('Error al enviar solicitud: $e'),
+                        ),
                       );
                     }
                   },
@@ -945,22 +1008,32 @@ class Screen4 extends StatelessWidget {
                   leading: Icon(icono, color: color),
                   title: Text(
                     "Código: $codigo",
-                    style: TextStyle(fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18, color: Colors.white),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
                   ),
                   subtitle: Text(
                     "Servicio: $servicio\nFecha: ${DateFormat('dd/MM/yyyy').format(fecha)}\nHorario: $horario",
-                    style: TextStyle(fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18, color: Colors.white),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
                   ),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         textoEstado,
-                        style: TextStyle(color: Colors.blue, fontSize: 15, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),

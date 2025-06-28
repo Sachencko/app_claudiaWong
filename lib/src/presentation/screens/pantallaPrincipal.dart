@@ -19,6 +19,9 @@ import 'package:claudia_wong_app/src/widgets/agregar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class pantallaPrincipal extends StatefulWidget {
   final String usuario;
@@ -43,6 +46,7 @@ class _NavegadorState extends State<pantallaPrincipal> {
       Screen2(usuario: widget.usuario),
       Screen3(usuario: widget.usuario),
       Screen4(usuario: widget.usuario),
+      Screen5(usuario: widget.usuario),
     ]);
   }
 
@@ -173,6 +177,10 @@ class _NavegadorState extends State<pantallaPrincipal> {
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.alarm),
               label: 'Notificaciones',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.map),
+              label: 'Encuentranos',
             ),
           ],
           onTap: (index) {
@@ -1206,3 +1214,97 @@ class Screen4 extends StatelessWidget {
     );
   }
 }
+
+
+
+class Screen5 extends StatelessWidget {
+  const Screen5({super.key, required this.usuario});
+  final String usuario;
+
+  // Función para abrir Google Maps con coordenadas
+  void _abrirEnGoogleMaps(BuildContext context, LatLng target) async {
+    final url =
+        'https://www.google.com/maps/search/?api=1&query=${target.latitude},${target.longitude}';
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo abrir Google Maps')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final LatLng target = LatLng(-13.418937843522185, -76.13454396816157);
+
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 230, 215, 186),
+      body: Column(
+        children: [
+          // Mapa
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: FlutterMap(
+                  options: MapOptions(
+                    center: target,
+                    zoom: 15.0,
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                      subdomains: ['a', 'b', 'c'],
+                      userAgentPackageName: 'com.example.app',
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        Marker(
+                          point: target,
+                          width: 80,
+                          height: 80,
+                          child: const Icon(
+                            Icons.location_pin,
+                            color: Colors.red,
+                            size: 40,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Botón dorado
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: ElevatedButton.icon(
+                onPressed: () => _abrirEnGoogleMaps(context, target),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(211, 255, 198, 43), 
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                icon: const Icon(Icons.map, color: Color.fromARGB(255, 0, 0, 0)),
+                label: const Text(
+                  "Abrir en Google Maps",
+                  style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

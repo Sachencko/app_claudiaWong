@@ -127,17 +127,42 @@ class _RegistroState extends State<Registro> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildTextField(nombreController, "Nombre", TextInputType.name, nombreFocus),
+                  _buildTextField(
+                    nombreController,
+                    "Nombre",
+                    TextInputType.name,
+                    nombreFocus,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(apellidoController, "Apellido", TextInputType.name),
+                  _buildTextField(
+                    apellidoController,
+                    "Apellido",
+                    TextInputType.name,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(usuarioController, "Usuario", TextInputType.name),
+                  _buildTextField(
+                    usuarioController,
+                    "Usuario",
+                    TextInputType.name,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(correoController, "Correo", TextInputType.emailAddress),
+                  _buildTextField(
+                    correoController,
+                    "Correo",
+                    TextInputType.emailAddress,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(passController, "Contraseña", TextInputType.visiblePassword),
+                  _buildTextField(
+                    passController,
+                    "Contraseña",
+                    TextInputType.visiblePassword,
+                  ),
                   const SizedBox(height: 30),
-                  _buildTextField(telController, "Telefono", TextInputType.phone),
+                  _buildTextField(
+                    telController,
+                    "Telefono",
+                    TextInputType.phone,
+                  ),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: 315,
@@ -154,18 +179,31 @@ class _RegistroState extends State<Registro> {
                         final validName = RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$');
                         final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
 
-                        if ([nombre, apellido, usuario, correo, pass, telefono].any((e) => e.isEmpty)) {
-                          _showSnackBar("Todos los campos deben estar completos");
+                        if ([
+                          nombre,
+                          apellido,
+                          usuario,
+                          correo,
+                          pass,
+                          telefono,
+                        ].any((e) => e.isEmpty)) {
+                          _showSnackBar(
+                            "Todos los campos deben estar completos",
+                          );
                           return;
                         }
 
                         if (!validName.hasMatch(nombre)) {
-                          _showSnackBar("El nombre solo puede contener letras y espacios");
+                          _showSnackBar(
+                            "El nombre solo puede contener letras y espacios",
+                          );
                           return;
                         }
 
                         if (!validName.hasMatch(apellido)) {
-                          _showSnackBar("El apellido solo puede contener letras y espacios");
+                          _showSnackBar(
+                            "El apellido solo puede contener letras y espacios",
+                          );
                           return;
                         }
 
@@ -175,30 +213,52 @@ class _RegistroState extends State<Registro> {
                         }
 
                         if (!RegExp(r'^\d{9}$').hasMatch(telefono)) {
-                          _showSnackBar("El teléfono debe tener exactamente 9 dígitos numéricos");
+                          _showSnackBar(
+                            "El teléfono debe tener exactamente 9 dígitos numéricos",
+                          );
                           return;
                         }
 
                         try {
-                          CollectionReference usuariosRef = FirebaseFirestore.instance.collection('usuarios');
+                          CollectionReference usuariosRef = FirebaseFirestore
+                              .instance
+                              .collection('usuarios');
 
                           // Verifica si usuario ya existe
-                          bool usuarioExiste = (await usuariosRef.where('usuario', isEqualTo: usuario).get()).docs.isNotEmpty;
+                          bool usuarioExiste =
+                              (await usuariosRef
+                                      .where('usuario', isEqualTo: usuario)
+                                      .get())
+                                  .docs
+                                  .isNotEmpty;
                           if (usuarioExiste) {
-                            _showSnackBar("Este nombre de usuario ya está en uso");
+                            _showSnackBar(
+                              "Este nombre de usuario ya está en uso",
+                            );
                             return;
                           }
 
                           // Verifica si correo ya existe en Firestore
-                          bool correoExiste = (await usuariosRef.where('correo', isEqualTo: correo).get()).docs.isNotEmpty;
+                          bool correoExiste =
+                              (await usuariosRef
+                                      .where('correo', isEqualTo: correo)
+                                      .get())
+                                  .docs
+                                  .isNotEmpty;
                           if (correoExiste) {
-                            _showSnackBar("Este correo ya está registrado en la base de datos");
+                            _showSnackBar(
+                              "Este correo ya está registrado en la base de datos",
+                            );
                             return;
                           }
 
                           // Crear cuenta en Firebase Auth
-                          UserCredential userCredential = await FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(email: correo, password: pass);
+                          UserCredential userCredential = await FirebaseAuth
+                              .instance
+                              .createUserWithEmailAndPassword(
+                                email: correo,
+                                password: pass,
+                              );
 
                           // Guardar datos adicionales
                           await usuariosRef.doc(userCredential.user!.uid).set({
@@ -211,7 +271,10 @@ class _RegistroState extends State<Registro> {
                             'creadoEn': Timestamp.now(),
                           });
 
-                          _showSnackBar("Usuario registrado con éxito", color: Colors.green);
+                          _showSnackBar(
+                            "Usuario registrado con éxito",
+                            color: Colors.green,
+                          );
 
                           Future.delayed(const Duration(seconds: 1), () {
                             Navigator.pushReplacement(
@@ -232,17 +295,25 @@ class _RegistroState extends State<Registro> {
                               errorMensaje = 'El registro no está habilitado.';
                               break;
                             case 'weak-password':
-                              errorMensaje = 'La contraseña es muy débil. Debe tener al menos 6 caracteres.';
+                              errorMensaje =
+                                  'La contraseña es muy débil. Debe tener al menos 6 caracteres.';
                               break;
                             default:
-                              errorMensaje = 'Error al registrar usuario. Inténtalo de nuevo.';
+                              errorMensaje =
+                                  'Error al registrar usuario. Inténtalo de nuevo.';
                           }
                           _showSnackBar(errorMensaje, color: Colors.red);
                         } catch (e) {
-                          _showSnackBar("Ocurrió un error inesperado.", color: Colors.red);
+                          _showSnackBar(
+                            "Ocurrió un error inesperado.",
+                            color: Colors.red,
+                          );
                         }
                       },
-                      child: const Text('Registrar datos', style: TextStyle(color: Colors.white, fontSize: 18)),
+                      child: const Text(
+                        'Registrar datos',
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 88, 72, 175),
                         shape: RoundedRectangleBorder(
@@ -261,54 +332,60 @@ class _RegistroState extends State<Registro> {
   }
 
   Widget _buildTextField(
-  TextEditingController controller,
-  String label,
-  TextInputType inputType, [
-  FocusNode? focusNode,
-]) {
-  bool esContrasena = label == "Contraseña";
+    TextEditingController controller,
+    String label,
+    TextInputType inputType, [
+    FocusNode? focusNode,
+  ]) {
+    bool esContrasena = label == "Contraseña";
 
-  return Container(
-    width: 315,
-    child: TextField(
-      cursorColor: const Color.fromARGB(255, 248, 200, 40),
-      controller: controller,
-      keyboardType: inputType,
-      focusNode: focusNode,
-      obscureText: esContrasena ? !_mostrarContrasena : false,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.black,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(50), right: Radius.circular(50)),
-          borderSide: const BorderSide(color: Colors.white, width: 2),
+    return Container(
+      width: 315,
+      child: TextField(
+        cursorColor: const Color.fromARGB(255, 248, 200, 40),
+        controller: controller,
+        keyboardType: inputType,
+        focusNode: focusNode,
+        obscureText: esContrasena ? !_mostrarContrasena : false,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.black,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.horizontal(
+              left: Radius.circular(50),
+              right: Radius.circular(50),
+            ),
+            borderSide: const BorderSide(color: Colors.white, width: 2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.horizontal(
+              left: Radius.circular(50),
+              right: Radius.circular(50),
+            ),
+            borderSide: const BorderSide(color: Colors.white, width: 2),
+          ),
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.white, fontSize: 18),
+          contentPadding: const EdgeInsets.only(left: 25),
+          suffixIcon:
+              esContrasena
+                  ? IconButton(
+                    icon: Icon(
+                      _mostrarContrasena
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _mostrarContrasena = !_mostrarContrasena;
+                      });
+                    },
+                  )
+                  : null,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(50), right: Radius.circular(50)),
-          borderSide: const BorderSide(color: Colors.white, width: 2),
-        ),
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.white, fontSize: 18),
-        contentPadding: const EdgeInsets.only(left: 25),
-        suffixIcon: esContrasena
-            ? IconButton(
-                icon: Icon(
-                  _mostrarContrasena ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _mostrarContrasena = !_mostrarContrasena;
-                  });
-                },
-              )
-            : null,
+        style: const TextStyle(color: Colors.white),
       ),
-      style: const TextStyle(color: Colors.white),
-    ),
-  );
-}
-
+    );
+  }
 }

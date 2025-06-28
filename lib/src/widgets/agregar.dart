@@ -290,7 +290,10 @@ class _AgregarState extends State<Agregar> {
       collapsedBackgroundColor: const Color.fromARGB(255, 107, 107, 107),
       title: Text(
         categoria,
-        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
       ),
       children:
           servicios.map((servicio) {
@@ -299,8 +302,20 @@ class _AgregarState extends State<Agregar> {
             );
             return ListTile(
               leading: Image.asset(servicio['img'], width: 40, height: 40),
-              title: Text(servicio['nombre'], style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255), fontStyle: FontStyle.italic),),
-              subtitle: Text("S/. ${servicio['precio']}", style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255), fontStyle: FontStyle.italic),),
+              title: Text(
+                servicio['nombre'],
+                style: TextStyle(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              subtitle: Text(
+                "S/. ${servicio['precio']}",
+                style: TextStyle(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
               trailing: Checkbox(
                 activeColor: const Color.fromARGB(255, 206, 172, 69),
                 value: seleccionado,
@@ -328,9 +343,12 @@ class _AgregarState extends State<Agregar> {
           padding: const EdgeInsets.all(12),
           children: [
             ListTile(
-              title: const Text("Selecciona la Fecha de tu Cita", style: TextStyle(fontWeight: FontWeight.bold , fontSize: 18),),
+              title: const Text(
+                "Selecciona la Fecha de tu Cita",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
               subtitle: Text(
-                style: TextStyle(fontWeight: FontWeight.bold , fontSize: 18),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 fechaSeleccionada != null
                     ? DateFormat('dd/MM/yyyy').format(fechaSeleccionada!)
                     : "No seleccionada",
@@ -341,7 +359,7 @@ class _AgregarState extends State<Agregar> {
             const SizedBox(height: 10),
             const Text(
               "Seleccionar Horario",
-              style: TextStyle(fontWeight: FontWeight.bold , fontSize: 18),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             const SizedBox(height: 10),
             Wrap(
@@ -351,7 +369,11 @@ class _AgregarState extends State<Agregar> {
                     return ChoiceChip(
                       label: Text(
                         h,
-                        style: const TextStyle(fontWeight: FontWeight.bold , fontSize: 18, color: Colors.black),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
                       ),
                       selected: horarioSeleccionado == h,
                       selectedColor: const Color.fromARGB(255, 204, 173, 48),
@@ -379,7 +401,7 @@ class _AgregarState extends State<Agregar> {
                 style: TextStyle(
                   color: Color.fromARGB(255, 212, 65, 55),
                   fontWeight: FontWeight.bold,
-                  fontSize: 18
+                  fontSize: 18,
                 ),
               ),
               const SizedBox(height: 20),
@@ -395,7 +417,10 @@ class _AgregarState extends State<Agregar> {
                   children: [
                     const Text(
                       "SERVICIOS SELECCIONADOS",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     ...serviciosPorCategoria.entries.expand((entry) {
@@ -410,8 +435,22 @@ class _AgregarState extends State<Agregar> {
                               padding: const EdgeInsets.symmetric(vertical: 2),
                               child: Row(
                                 children: [
-                                  Expanded(child: Text("- ${s['nombre']}", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),)),
-                                  Text("S/. ${s['precio']}", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),),
+                                  Expanded(
+                                    child: Text(
+                                      "- ${s['nombre']}",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    "S/. ${s['precio']}",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
                                 ],
                               ),
                             );
@@ -420,13 +459,20 @@ class _AgregarState extends State<Agregar> {
                     const SizedBox(height: 10),
                     Text(
                       "TOTAL A PAGAR: S/. $total",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Image.asset("assets/yape.jpg", width: 200),
                     const Text(
                       "CLAUDIA WONG ARIAS\n987654321",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 10),
@@ -440,12 +486,21 @@ class _AgregarState extends State<Agregar> {
                           value: "adelanto",
                           child: Text(
                             "Pago por adelanto - reserva de cita (S/10)",
-                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         DropdownMenuItem(
                           value: "completo",
-                          child: Text("Pago por servicio completo",  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                          child: Text(
+                            "Pago por servicio completo",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ],
                       onChanged: (value) {
@@ -461,7 +516,13 @@ class _AgregarState extends State<Agregar> {
                           pagoConfirmado = value ?? false;
                         });
                       },
-                      title: const Text("Verificación de pago",  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      title: const Text(
+                        "Verificación de pago",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 10),
                     SizedBox(

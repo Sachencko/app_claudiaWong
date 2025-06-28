@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [Locale('es', ''), Locale('en', '')],
 
-      home: pantallaPrincipal(usuario: 'angel123456')
+      home: PantallaCarga()
     );
   }
 }

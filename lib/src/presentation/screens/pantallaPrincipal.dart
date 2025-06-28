@@ -27,13 +27,11 @@ class pantallaPrincipal extends StatefulWidget {
   final String usuario;
   const pantallaPrincipal({super.key, required this.usuario});
 
-
   @override
   _NavegadorState createState() => _NavegadorState();
 }
 
 class _NavegadorState extends State<pantallaPrincipal> {
-
   int _currentIndex = 0;
 
   final List<Widget> _screens = [];
@@ -216,7 +214,7 @@ class Screen1 extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 19,
                       fontWeight: FontWeight.bold,
-                      color:  Color.fromARGB(150, 0, 0, 0),
+                      color: Color.fromARGB(150, 0, 0, 0),
                     ),
                   ),
                 ),
@@ -295,72 +293,73 @@ class Screen1 extends StatelessWidget {
                     final servicio = data['servicio'] ?? 'Sin servicio';
                     final horario = data['horario'] ?? 'Sin horario';
 
-                   return Container(
-  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-  decoration: BoxDecoration(
-    boxShadow: [
-      BoxShadow(
-        color :Colors.black.withOpacity(0.4),
-        blurRadius: 5,
-        spreadRadius: 0,
-        offset: Offset(4, 4),//DIRECCION SOMBRA x y
-      ),
-    ],
-    borderRadius: BorderRadius.circular(8),
-  ),
-  child: Card(
-    clipBehavior: Clip.antiAlias,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/bakgroundBelleza.jpg'),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.5),
-            BlendMode.darken,
-          ),
-        ),
-      ),
-      child: ListTile(
-        leading: Icon(icono, color: color),
-        title: Text(
-          "Servicio: $servicio",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.normal,
-            fontSize: 18,
-            color: Colors.white,
-          ),
-        ),
-        subtitle: Text(
-          fecha != null
-              ? "Fecha: ${DateFormat('dd/MM/yyyy').format(fecha)}\nHorario: $horario"
-              : "Horario: $horario",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.normal,
-            fontSize: 18,
-            color: Colors.white,
-          ),
-        ),
-        trailing: Text(
-          textoEstado,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: color,
-            fontSize: 15,
-          ),
-        ),
-        isThreeLine: true,
-      ),
-    ),
-  ),
-);
-
-
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.4),
+                            blurRadius: 5,
+                            spreadRadius: 0,
+                            offset: Offset(4, 4), //DIRECCION SOMBRA x y
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/bakgroundBelleza.jpg'),
+                              fit: BoxFit.cover,
+                              colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.5),
+                                BlendMode.darken,
+                              ),
+                            ),
+                          ),
+                          child: ListTile(
+                            leading: Icon(icono, color: color),
+                            title: Text(
+                              "Servicio: $servicio",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                            subtitle: Text(
+                              fecha != null
+                                  ? "Fecha: ${DateFormat('dd/MM/yyyy').format(fecha)}\nHorario: $horario"
+                                  : "Horario: $horario",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                            trailing: Text(
+                              textoEstado,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: color,
+                                fontSize: 15,
+                              ),
+                            ),
+                            isThreeLine: true,
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 );
               },
@@ -518,94 +517,87 @@ class _Screen2State extends State<Screen2> {
         data.containsKey('servicio') ? data['servicio'] : 'Sin servicio';
 
     return Container(
-  margin: const EdgeInsets.symmetric(vertical: 8),
-  decoration: BoxDecoration(
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.4),
-        blurRadius: 5,
-        spreadRadius: 0,
-        offset: const Offset(5, 4),
-        
-      ),
-    ],
-    borderRadius: BorderRadius.circular(8),
-  ),
-  child: Card(
-    clipBehavior: Clip.antiAlias,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        image: const DecorationImage(
-          image: AssetImage('assets/backgroundChico.jpg'),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-            Colors.black54,
-            BlendMode.darken,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            blurRadius: 5,
+            spreadRadius: 0,
+            offset: const Offset(5, 4),
           ),
-        ),
+        ],
         borderRadius: BorderRadius.circular(8),
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(12),
-        leading: Checkbox(
-          focusColor: Colors.black,
-          fillColor: WidgetStatePropertyAll(Colors.black),
-          checkColor: const Color.fromARGB(255, 219, 172, 31),
-          value: seleccionada,
-          onChanged: (value) {
-            setState(() {
-              citaSeleccionada = value! ? cita : null;
-            });
-          },
-        ),
-        title: Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: "Código de Cita : $codigo\n",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 18,
-                ),
-              ),
-              TextSpan(
-                text: "Fecha : ${fecha != null ? DateFormat('dd/MM/yyyy').format(fecha) : 'No disponible'}\n",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 18,
-                ),
-              ),
-              TextSpan(
-                text: "Hora programada: $horario\n",
-                style: const TextStyle(
-                 fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 18,
-                ),
-              ),
-              TextSpan(
-                text: "Servicio : $servicio\n",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 18,
-                ),
-              ),
-            ],
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: Container(
+          decoration: BoxDecoration(
+            image: const DecorationImage(
+              image: AssetImage('assets/backgroundChico.jpg'),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
+            ),
+            borderRadius: BorderRadius.circular(8),
           ),
-          style: const TextStyle(color: Colors.white),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(12),
+            leading: Checkbox(
+              focusColor: Colors.black,
+              fillColor: WidgetStatePropertyAll(Colors.black),
+              checkColor: const Color.fromARGB(255, 219, 172, 31),
+              value: seleccionada,
+              onChanged: (value) {
+                setState(() {
+                  citaSeleccionada = value! ? cita : null;
+                });
+              },
+            ),
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Código de Cita : $codigo\n",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 18,
+                    ),
+                  ),
+                  TextSpan(
+                    text:
+                        "Fecha : ${fecha != null ? DateFormat('dd/MM/yyyy').format(fecha) : 'No disponible'}\n",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 18,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "Hora programada: $horario\n",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 18,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "Servicio : $servicio\n",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
         ),
       ),
-    ),
-  ),
-);
-
-
+    );
   }
 
   @override
@@ -626,7 +618,7 @@ class _Screen2State extends State<Screen2> {
                     topRight: Radius.circular(30),
                     bottomRight: Radius.circular(30),
                     topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30)
+                    bottomLeft: Radius.circular(30),
                   ),
                 ),
                 child: const SizedBox(
@@ -757,65 +749,66 @@ class _Screen3State extends State<Screen3> {
               String horarioActual = data['horario'] ?? 'No seleccionado';
 
               return Card(
-  clipBehavior: Clip.antiAlias,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(8),
-  ),
-  elevation: 6,
-  child: Container(
-    decoration: BoxDecoration(
-      image: const DecorationImage(
-        image: AssetImage('assets/spa.jpg'),
-        fit: BoxFit.cover,
-        colorFilter: ColorFilter.mode(
-          Colors.black54,
-          BlendMode.darken,
-        ),
-      ),
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 16,
-      ),
-      title: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: "Fecha : $fechaStr\n",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.normal,
-                fontSize: 18,
-              ),
-            ),
-            TextSpan(
-              text: "Horario : $horarioActual\n",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.normal,
-                fontSize: 18,
-              ),
-            ),
-            TextSpan(
-              text: "Servicios:\n- $servicioActual\n",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.normal,
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ),
-        style: const TextStyle(color: Colors.white),
-      ),
-      trailing: const Icon(Icons.edit, color: Colors.amber),
-      onTap: () => _mostrarDialogoModificacion(context, cita.id, data),
-    ),
-  ),
-);
-
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                elevation: 6,
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: const DecorationImage(
+                      image: AssetImage('assets/spa.jpg'),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.black54,
+                        BlendMode.darken,
+                      ),
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
+                    title: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Fecha : $fechaStr\n",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 18,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "Horario : $horarioActual\n",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 18,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "Servicios:\n- $servicioActual\n",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    trailing: const Icon(Icons.edit, color: Colors.amber),
+                    onTap:
+                        () =>
+                            _mostrarDialogoModificacion(context, cita.id, data),
+                  ),
+                ),
+              );
             },
           );
         },
@@ -824,292 +817,308 @@ class _Screen3State extends State<Screen3> {
   }
 
   void _mostrarDialogoModificacion(
-  BuildContext context,
-  String citaId,
-  Map<String, dynamic> data,
-) {
-  // Define serviciosPorCategoria dentro de la función o como variable global para evitar error "undefined"
-  final Map<String, List<Map<String, dynamic>>> serviciosPorCategoria = {
-    "TRATAMIENTOS FACIALES": [
-      {"nombre": "Limpieza facial profunda"},
-      {"nombre": "Limpieza facial basica"},
-    ],
-    "ESTÉTICA FACIAL": [
-      {"nombre": "Depilación de rostro (con cera)"},
-      {"nombre": "Visagismo de cejas y depilacion con cera"},
-      {"nombre": "Lifting de pestañas"},
-      {"nombre": "Laminado de cejas"},
-    ],
-    "MANICURE": [
-      {"nombre": "Esmaltado gel"},
-      {"nombre": "Esmaltado semipermanente"},
-      {"nombre": "Uñas poligel"},
-      {"nombre": "Uñas acrílicas"},
-      {"nombre": "Capping con acrilico"},
-      {"nombre": "Cromados y relieves"},
-      {"nombre": "Manicure francesa"},
-      {"nombre": "Efecto ojo de gato"},
-      {"nombre": "Efecto espejo"},
-      {"nombre": "Tecnica baby boomer"},
-      {"nombre": "Tecnica rubber"},
-      {"nombre": "Diseño tribal"},
-    ],
-    "MASAJES": [
-      {"nombre": "Masaje relajante y Aromaterapia"},
-      {"nombre": "Masoterapia... 1hr"},
-      {"nombre": "Masoterapia... 2hr"},
-    ],
-  };
+    BuildContext context,
+    String citaId,
+    Map<String, dynamic> data,
+  ) {
+    final Map<String, List<Map<String, dynamic>>> serviciosPorCategoria = {
+      "TRATAMIENTOS FACIALES": [
+        {"nombre": "Limpieza facial profunda"},
+        {"nombre": "Limpieza facial basica"},
+      ],
+      "ESTÉTICA FACIAL": [
+        {"nombre": "Depilación de rostro (con cera)"},
+        {"nombre": "Visagismo de cejas y depilacion con cera"},
+        {"nombre": "Lifting de pestañas"},
+        {"nombre": "Laminado de cejas"},
+      ],
+      "MANICURE": [
+        {"nombre": "Esmaltado gel"},
+        {"nombre": "Esmaltado semipermanente"},
+        {"nombre": "Uñas poligel"},
+        {"nombre": "Uñas acrílicas"},
+        {"nombre": "Capping con acrilico"},
+        {"nombre": "Cromados y relieves"},
+        {"nombre": "Manicure francesa"},
+        {"nombre": "Efecto ojo de gato"},
+        {"nombre": "Efecto espejo"},
+        {"nombre": "Tecnica baby boomer"},
+        {"nombre": "Tecnica rubber"},
+        {"nombre": "Diseño tribal"},
+      ],
+      "MASAJES": [
+        {"nombre": "Masaje relajante y Aromaterapia"},
+        {"nombre": "Masoterapia... 1hr"},
+        {"nombre": "Masoterapia... 2hr"},
+      ],
+    };
 
-  DateTime selectedDate = DateTime.now();
-  if (data['fecha'] != null && data['fecha'] is Timestamp) {
-    selectedDate = (data['fecha'] as Timestamp).toDate();
-  }
+    DateTime selectedDate = DateTime.now();
+    if (data['fecha'] != null && data['fecha'] is Timestamp) {
+      selectedDate = (data['fecha'] as Timestamp).toDate();
+    }
 
-  // Si tienes un array de servicios global, úsalo para el fallback
-  final List<String> servicios = serviciosPorCategoria.values
-      .expand((categoria) => categoria.map((s) => s['nombre'] as String))
-      .toList();
+    final List<String> servicios =
+        serviciosPorCategoria.values
+            .expand((categoria) => categoria.map((s) => s['nombre'] as String))
+            .toList();
 
-  String servicioSeleccionado = data['servicio'] is String
-      ? data['servicio']
-      : (data['servicio'] is List && data['servicio'].isNotEmpty
-          ? data['servicio'][0]
-          : servicios.first);
+    String servicioSeleccionado =
+        data['servicio'] is String
+            ? data['servicio']
+            : (data['servicio'] is List && data['servicio'].isNotEmpty
+                ? data['servicio'][0]
+                : servicios.first);
 
-  final List<String> horarios = ['08:00', '09:00', '10:00', '11:00']; // Ejemplo
-  String horarioSeleccionado = data['horario'] ?? horarios.first;
+    final List<String> horarios = [
+      '9:00 a.m',
+      '10:00 a.m',
+      '11:00 a.m',
+      '2:00 p.m',
+      '3:00 p.m',
+    ];
+    String horarioSeleccionado = data['horario'] ?? horarios.first;
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setStateDialog) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            title: const Text(
-              'Modificar cita',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-            ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Fecha
-                  Card(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              title: const Text(
+                'Modificar cita',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Fecha
+                    Card(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        title: const Text(
+                          "Fecha",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          DateFormat('dd/MM/yyyy').format(selectedDate),
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        trailing: const Icon(Icons.calendar_today),
+                        onTap: () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: selectedDate,
+                            firstDate: DateTime.now().subtract(
+                              const Duration(days: 365),
+                            ),
+                            lastDate: DateTime.now().add(
+                              const Duration(days: 365 * 2),
+                            ),
+                          );
+                          if (picked != null) {
+                            setStateDialog(() {
+                              selectedDate = picked;
+                            });
+                          }
+                        },
+                      ),
                     ),
-                    elevation: 4,
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+
+                    // Servicio
+                    Card(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      title: const Text(
-                        "Fecha",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Servicio",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                for (var categoria
+                                    in serviciosPorCategoria.values)
+                                  for (var servicio in categoria)
+                                    ChoiceChip(
+                                      label: Text(servicio['nombre']),
+                                      selected:
+                                          servicioSeleccionado ==
+                                          servicio['nombre'],
+                                      selectedColor: const Color(0xFFFFD700),
+                                      backgroundColor: Colors.grey.shade200,
+                                      labelStyle: TextStyle(
+                                        color:
+                                            servicioSeleccionado ==
+                                                    servicio['nombre']
+                                                ? Colors.black
+                                                : Colors.black87,
+                                      ),
+                                      onSelected: (_) {
+                                        setStateDialog(() {
+                                          servicioSeleccionado =
+                                              servicio['nombre'];
+                                        });
+                                      },
+                                    ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                      subtitle: Text(
-                        DateFormat('dd/MM/yyyy').format(selectedDate),
-                        style: const TextStyle(fontSize: 16),
+                    ),
+
+                    // Horario
+                    Card(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      trailing: const Icon(Icons.calendar_today),
-                      onTap: () async {
-                        final picked = await showDatePicker(
-                          context: context,
-                          initialDate: selectedDate,
-                          firstDate: DateTime.now().subtract(
-                            const Duration(days: 365),
-                          ),
-                          lastDate: DateTime.now().add(
-                            const Duration(days: 365 * 2),
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Horario",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children:
+                                  horarios.map((horario) {
+                                    final isSelected =
+                                        horarioSeleccionado == horario;
+                                    return ChoiceChip(
+                                      label: Text(horario),
+                                      selected: isSelected,
+                                      selectedColor: const Color(0xFFFFD700),
+                                      backgroundColor: Colors.grey.shade200,
+                                      labelStyle: TextStyle(
+                                        color:
+                                            isSelected
+                                                ? Colors.black
+                                                : Colors.black87,
+                                      ),
+                                      onSelected: (_) {
+                                        setStateDialog(() {
+                                          horarioSeleccionado = horario;
+                                        });
+                                      },
+                                    );
+                                  }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.grey.shade300,
+                  ),
+                  child: const Text(
+                    'Cancelar',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFFD700),
+                  ),
+                  child: const Text(
+                    'Enviar solicitud',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () async {
+                    try {
+                      bool cambioEnFecha =
+                          data['fecha'] is Timestamp &&
+                          (data['fecha'] as Timestamp).toDate() != selectedDate;
+                      bool cambioEnHorario =
+                          data['horario'] != horarioSeleccionado;
+                      bool cambioEnServicio =
+                          data['servicio'] != servicioSeleccionado;
+
+                      if (!cambioEnFecha &&
+                          !cambioEnHorario &&
+                          !cambioEnServicio) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No has realizado ningún cambio.'),
                           ),
                         );
-                        if (picked != null) {
-                          setStateDialog(() {
-                            selectedDate = picked;
+                        return;
+                      }
+
+                      await FirebaseFirestore.instance
+                          .collection('solicitudes_modificacion')
+                          .add({
+                            'citaId': citaId,
+                            'usuario': widget.usuario,
+                            'nuevaFecha': Timestamp.fromDate(selectedDate),
+                            'nuevoHorario': horarioSeleccionado,
+                            'nuevoServicio': servicioSeleccionado,
+                            'estado': 'pendiente',
+                            'creado': Timestamp.now(),
                           });
-                        }
-                      },
-                    ),
-                  ),
 
-                  // Servicio
-                  Card(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Servicio",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              for (var categoria in serviciosPorCategoria.values)
-                                for (var servicio in categoria)
-                                  ChoiceChip(
-                                    label: Text(servicio['nombre']),
-                                    selected:
-                                        servicioSeleccionado == servicio['nombre'],
-                                    selectedColor: const Color(0xFFFFD700),
-                                    backgroundColor: Colors.grey.shade200,
-                                    labelStyle: TextStyle(
-                                      color: servicioSeleccionado ==
-                                              servicio['nombre']
-                                          ? Colors.black
-                                          : Colors.black87,
-                                    ),
-                                    onSelected: (_) {
-                                      setStateDialog(() {
-                                        servicioSeleccionado = servicio['nombre'];
-                                      });
-                                    },
-                                  ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Horario
-                  Card(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Horario",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: horarios.map((horario) {
-                              final isSelected = horarioSeleccionado == horario;
-                              return ChoiceChip(
-                                label: Text(horario),
-                                selected: isSelected,
-                                selectedColor: const Color(0xFFFFD700),
-                                backgroundColor: Colors.grey.shade200,
-                                labelStyle: TextStyle(
-                                  color: isSelected ? Colors.black : Colors.black87,
-                                ),
-                                onSelected: (_) {
-                                  setStateDialog(() {
-                                    horarioSeleccionado = horario;
-                                  });
-                                },
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.grey.shade300,
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Solicitud enviada al administrador.'),
+                        ),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error al enviar solicitud: $e'),
+                        ),
+                      );
+                    }
+                  },
                 ),
-                child: const Text('Cancelar'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFD700),
-                ),
-                child: const Text('Enviar solicitud'),
-                onPressed: () async {
-                try {
-                  bool cambioEnFecha =
-                      data['fecha'] is Timestamp &&
-                      (data['fecha'] as Timestamp).toDate() != selectedDate;
-                  bool cambioEnHorario =
-                      data['horario'] != horarioSeleccionado;
-                  bool cambioEnServicio =
-                      data['servicio'] != servicioSeleccionado;
-
-                  if (!cambioEnFecha &&
-                      !cambioEnHorario &&
-                      !cambioEnServicio) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('No has realizado ningún cambio.'),
-                      ),
-                    );
-                    return;
-                  }
-
-                  await FirebaseFirestore.instance
-                      .collection('solicitudes_modificacion')
-                      .add({
-                        'citaId': citaId,
-                        'usuario': widget.usuario,
-                        'nuevaFecha': Timestamp.fromDate(selectedDate),
-                        'nuevoHorario': horarioSeleccionado,
-                        'nuevoServicio': servicioSeleccionado,
-                        'estado': 'pendiente',
-                        'creado': Timestamp.now(),
-                      });
-
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content:
-                          Text('Solicitud enviada al administrador.'),
-                    ),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Error al enviar solicitud: $e'),
-                    ),
-                  );
-                }
-              },
-              ),
-            ],
-          );
-        },
-      );
-    },
-  );
-}
-
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 }
 
 class Screen4 extends StatelessWidget {
@@ -1120,11 +1129,9 @@ class Screen4 extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      // El usuario no ha iniciado sesión. Muestra un mensaje o redirige.
       return Center(child: Text("Debes iniciar sesión para ver tus citas."));
     }
 
-    // Si sí está autenticado:
     final uid = user.uid;
 
     return Scaffold(
@@ -1191,18 +1198,18 @@ class Screen4 extends StatelessWidget {
                     ),
                   ),
                   trailing: Column(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    Text(
-      textoEstado,
-      style: TextStyle(
-        color: estadoPendiente ? Colors.blue : Colors.red, // aquí la corrección
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ],
-),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        textoEstado,
+                        style: TextStyle(
+                          color: estadoPendiente ? Colors.blue : Colors.red,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
 
                   isThreeLine: true,
                 ),
@@ -1215,24 +1222,9 @@ class Screen4 extends StatelessWidget {
   }
 }
 
-
-
 class Screen5 extends StatelessWidget {
   const Screen5({super.key, required this.usuario});
   final String usuario;
-
-  // Función para abrir Google Maps con coordenadas
-  void _abrirEnGoogleMaps(BuildContext context, LatLng target) async {
-    final url =
-        'https://www.google.com/maps/search/?api=1&query=${target.latitude},${target.longitude}';
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudo abrir Google Maps')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1249,10 +1241,7 @@ class Screen5 extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: FlutterMap(
-                  options: MapOptions(
-                    center: target,
-                    zoom: 15.0,
-                  ),
+                  options: MapOptions(center: target, zoom: 15.0),
                   children: [
                     TileLayer(
                       urlTemplate:
@@ -1279,32 +1268,8 @@ class Screen5 extends StatelessWidget {
               ),
             ),
           ),
-          // Botón dorado
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              width: double.infinity,
-              height: 45,
-              child: ElevatedButton.icon(
-                onPressed: () => _abrirEnGoogleMaps(context, target),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(211, 255, 198, 43), 
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                icon: const Icon(Icons.map, color: Color.fromARGB(255, 0, 0, 0)),
-                label: const Text(
-                  "Abrir en Google Maps",
-                  style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
   }
 }
-

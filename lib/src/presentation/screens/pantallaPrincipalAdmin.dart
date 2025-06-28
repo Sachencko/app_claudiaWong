@@ -331,11 +331,12 @@ class UsuarioCitasScreen extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 230, 215, 186),
       appBar: AppBar(title: Text("Citas de $usuario")),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-    .collection('agregar')
-    .where('usuario', isEqualTo: usuario)
-    .orderBy('fecha', descending: true)
-    .snapshots(),
+        stream:
+            FirebaseFirestore.instance
+                .collection('agregar')
+                .where('usuario', isEqualTo: usuario)
+                .orderBy('fecha', descending: true)
+                .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return const Center(child: CircularProgressIndicator());

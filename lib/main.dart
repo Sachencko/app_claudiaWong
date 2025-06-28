@@ -1,4 +1,5 @@
 import 'package:claudia_wong_app/src/presentation/screens/PantallaCarga.dart';
+import 'package:claudia_wong_app/src/presentation/screens/login.dart';
 import 'package:claudia_wong_app/src/presentation/screens/pantallaPrincipal.dart';
 import 'package:claudia_wong_app/src/presentation/screens/pantallaPrincipalAdmin.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [Locale('es', ''), Locale('en', '')],
 
-      home: PantallaCarga(),
+      home: pantallaPrincipal(usuario: 'angel123456')
     );
   }
 }

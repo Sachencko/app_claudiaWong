@@ -1,3 +1,12 @@
+/*
+ _____ _____ ____ _   _    _      ____   ____ ____  _____ _____ _   _ 
+|  ___| ____/ ___| | | |  / \    / ___| / ___|  _ \| ____| ____| \ | |
+| |_  |  _|| |   | |_| | / _ \   \___ \| |   | |_) |  _| |  _| |  \| |
+|  _| | |__| |___|  _  |/ ___ \   ___) | |___|  _ <| |___| |___| |\  |
+|_|   |_____\____|_| |_/_/   \_\ |____/ \____|_| \_\_____|_____|_| \_|
+
+*/
+
 import 'package:claudia_wong_app/src/presentation/screens/HorarioScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,12 +15,12 @@ import 'package:table_calendar/table_calendar.dart';
 class FechaScreen extends StatefulWidget {
   final String servicio;
   final String documentId;
-    final String usuario;
+  final String usuario;
 
   const FechaScreen({
     super.key,
     required this.servicio,
-    required this.documentId, 
+    required this.documentId,
     required this.usuario,
   });
 
@@ -85,10 +94,11 @@ class _FechaScreenState extends State<FechaScreen> {
                             builder:
                                 (context) => HorarioScreen(
                                   documentId: widget.documentId,
-                                  fecha: fechaSeleccionada!, usuario: widget.usuario,
+                                  fecha: fechaSeleccionada!,
+                                  usuario: widget.usuario,
                                 ),
                           ),
-                        ); 
+                        );
                       },
               child: Text("Aceptar"),
               style: ElevatedButton.styleFrom(

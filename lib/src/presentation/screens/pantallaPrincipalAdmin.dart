@@ -1,8 +1,22 @@
+/*
+
+ ____   _    _   _ _____  _    _     _        _      ____  _____ 
+|  _ \ / \  | \ | |_   _|/ \  | |   | |      / \    |  _ \| ____|
+| |_) / _ \ |  \| | | | / _ \ | |   | |     / _ \   | | | |  _|  
+|  __/ ___ \| |\  | | |/ ___ \| |___| |___ / ___ \  | |_| | |___ 
+|_| /_/  _\_\_|_\_|_|_/_/ _ \_\_____|_____/_/   \_\ |____/|_____|
+   / \  |  _ \|  \/  |_ _| \ | |                                 
+  / _ \ | | | | |\/| || ||  \| |                                 
+ / ___ \| |_| | |  | || || |\  |                                 
+/_/   \_\____/|_|  |_|___|_| \_|                                 
+
+*/
+
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:claudia_wong_app/src/presentation/screens/login.dart';
-import 'package:claudia_wong_app/src/presentation/screens/agregar.dart';
+import 'package:claudia_wong_app/src/widgets/agregar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -199,7 +213,7 @@ class _Screen1State extends State<Screen1> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'Buscar por nombre...',
+                hintText: 'Buscar por nombre',
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: Colors.white,
@@ -317,11 +331,11 @@ class UsuarioCitasScreen extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 230, 215, 186),
       appBar: AppBar(title: Text("Citas de $usuario")),
       body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance
-                .collection('agregar')
-                .where('usuario', isEqualTo: usuario) //AqUi uso usuarioEmail
-                .snapshots(),
+        stream: FirebaseFirestore.instance
+    .collection('agregar')
+    .where('usuario', isEqualTo: usuario)
+    .orderBy('fecha', descending: true)
+    .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return const Center(child: CircularProgressIndicator());
@@ -408,7 +422,6 @@ class _Screen2State extends State<Screen2> {
     );
   }
 
-  // 🔁 Widget para solicitudes de cancelación
   Widget _buildCancelaciones() {
     return StreamBuilder<QuerySnapshot>(
       stream:
@@ -462,7 +475,6 @@ class _Screen2State extends State<Screen2> {
                         try {
                           final citaId = data['idCita'];
 
-                          // Borrar la cita completamente si se acepta la cancelación
                           await FirebaseFirestore.instance
                               .collection('agregar')
                               .doc(citaId)
@@ -505,7 +517,6 @@ class _Screen2State extends State<Screen2> {
     );
   }
 
-  // 🔁 Widget para solicitudes de modificación
   Widget _buildModificaciones() {
     return StreamBuilder<QuerySnapshot>(
       stream:
@@ -688,7 +699,7 @@ class _Screen3State extends State<Screen3> {
       backgroundColor: const Color.fromARGB(255, 230, 215, 186),
       appBar: AppBar(title: const Text("Buscar cita por fecha")),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

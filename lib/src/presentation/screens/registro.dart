@@ -1,3 +1,17 @@
+/*
+
+ ____  _____ ____ ___ ____ _____ ____   ___  
+|  _ \| ____/ ___|_ _/ ___|_   _|  _ \ / _ \ 
+| |_) |  _|| |  _ | |\___ \ | | | |_) | | | |
+|  _ <| |__| |_| || | ___) || | |  _ <| |_| |
+|_|_\_\_____\____|___|____/_|_|_|_|_\_\\___/ 
+/ ___| / ___|  _ \| ____| ____| \ | |        
+\___ \| |   | |_) |  _| |  _| |  \| |        
+ ___) | |___|  _ <| |___| |___| |\  |        
+|____/ \____|_| \_\_____|_____|_| \_|        
+
+*/
+
 import 'dart:ui';
 import 'package:claudia_wong_app/src/presentation/screens/login.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +33,7 @@ class _RegistroState extends State<Registro> {
   final passController = TextEditingController();
   final telController = TextEditingController();
   final FocusNode nombreFocus = FocusNode();
+  bool _mostrarContrasena = false;
 
   void reiniciar() {
     if (nombreController.text.isEmpty &&
@@ -245,32 +260,55 @@ class _RegistroState extends State<Registro> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, TextInputType inputType, [FocusNode? focusNode]) {
-    return Container(
-      width: 315,
-      child: TextField(
-        cursorColor: const Color.fromARGB(255, 248, 200, 40),
-        controller: controller,
-        keyboardType: inputType,
-        focusNode: focusNode,
-        obscureText: label == "Contraseña",
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.black,
-          focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.horizontal(left: Radius.circular(50), right: Radius.circular(50)),
-            borderSide: const BorderSide(color: Colors.white, width: 2),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.horizontal(left: Radius.circular(50), right: Radius.circular(50)),
-            borderSide: const BorderSide(color: Colors.white, width: 2),
-          ),
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.white, fontSize: 18),
-          contentPadding: const EdgeInsets.only(left: 25),
+  Widget _buildTextField(
+  TextEditingController controller,
+  String label,
+  TextInputType inputType, [
+  FocusNode? focusNode,
+]) {
+  bool esContrasena = label == "Contraseña";
+
+  return Container(
+    width: 315,
+    child: TextField(
+      cursorColor: const Color.fromARGB(255, 248, 200, 40),
+      controller: controller,
+      keyboardType: inputType,
+      focusNode: focusNode,
+      obscureText: esContrasena ? !_mostrarContrasena : false,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.black,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.horizontal(
+              left: Radius.circular(50), right: Radius.circular(50)),
+          borderSide: const BorderSide(color: Colors.white, width: 2),
         ),
-        style: const TextStyle(color: Colors.white),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.horizontal(
+              left: Radius.circular(50), right: Radius.circular(50)),
+          borderSide: const BorderSide(color: Colors.white, width: 2),
+        ),
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.white, fontSize: 18),
+        contentPadding: const EdgeInsets.only(left: 25),
+        suffixIcon: esContrasena
+            ? IconButton(
+                icon: Icon(
+                  _mostrarContrasena ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _mostrarContrasena = !_mostrarContrasena;
+                  });
+                },
+              )
+            : null,
       ),
-    );
-  }
+      style: const TextStyle(color: Colors.white),
+    ),
+  );
+}
+
 }

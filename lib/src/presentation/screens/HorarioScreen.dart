@@ -1,3 +1,16 @@
+/*
+
+ _   _  ___  ____      _    ____  ___ ___  
+| | | |/ _ \|  _ \    / \  |  _ \|_ _/ _ \ 
+| |_| | | | | |_) |  / _ \ | |_) || | | | |
+|  _  | |_| |  _ <  / ___ \|  _ < | | |_| |
+|_|_|_|\___/|_|_\_\/_/__ \_\_| \_\___\___/ 
+/ ___| / ___|  _ \| ____| ____| \ | |      
+\___ \| |   | |_) |  _| |  _| |  \| |      
+ ___) | |___|  _ <| |___| |___| |\  |      
+|____/ \____|_| \_\_____|_____|_| \_
+
+*/
 import 'dart:math';
 
 import 'package:claudia_wong_app/src/widgets/noti.dart';
@@ -13,7 +26,7 @@ class HorarioScreen extends StatefulWidget {
   const HorarioScreen({
     super.key,
     required this.documentId,
-    required this.fecha, 
+    required this.fecha,
     required this.usuario,
   });
 
@@ -148,7 +161,11 @@ class _HorarioScreenState extends State<HorarioScreen> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Noti(codigo: codigo, usuario: widget.usuario,),
+                            builder:
+                                (context) => Noti(
+                                  codigo: codigo,
+                                  usuario: widget.usuario,
+                                ),
                           ),
                         );
                       },

@@ -1,8 +1,21 @@
+/*
+ ____   _    _   _ _____  _    _     _        _    
+|  _ \ / \  | \ | |_   _|/ \  | |   | |      / \   
+| |_) / _ \ |  \| | | | / _ \ | |   | |     / _ \  
+|  __/ ___ \| |\  | | |/ ___ \| |___| |___ / ___ \ 
+|_|_/_/___\_\_|_\_| |_/_/___\_\_____|_____/_/_  \_\
+|  _ \|  _ \|_ _| \ | |/ ___|_ _|  _ \ / \  | |    
+| |_) | |_) || ||  \| | |    | || |_) / _ \ | |    
+|  __/|  _ < | || |\  | |___ | ||  __/ ___ \| |___ 
+|_|   |_| \_\___|_| \_|\____|___|_| /_/   \_\_____|
+
+*/
+
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:claudia_wong_app/src/presentation/screens/login.dart';
-import 'package:claudia_wong_app/src/presentation/screens/agregar.dart';
+import 'package:claudia_wong_app/src/widgets/agregar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +24,13 @@ class pantallaPrincipal extends StatefulWidget {
   final String usuario;
   const pantallaPrincipal({super.key, required this.usuario});
 
+
   @override
   _NavegadorState createState() => _NavegadorState();
 }
 
 class _NavegadorState extends State<pantallaPrincipal> {
+
   int _currentIndex = 0;
 
   final List<Widget> _screens = [];
@@ -136,10 +151,6 @@ class _NavegadorState extends State<pantallaPrincipal> {
       ),
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           backgroundColor: Colors.black,
@@ -197,7 +208,7 @@ class Screen1 extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 19,
                       fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(131, 0, 0, 0),
+                      color:  Color.fromARGB(150, 0, 0, 0),
                     ),
                   ),
                 ),
@@ -213,7 +224,8 @@ class Screen1 extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: Container(
               decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 73, 73, 73),
+                //as
+                color: Color.fromARGB(255, 0, 0, 0),
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(30),
                   bottomRight: Radius.circular(30),
@@ -242,7 +254,7 @@ class Screen1 extends StatelessWidget {
                   FirebaseFirestore.instance
                       .collection('agregar')
                       .where('usuario', isEqualTo: usuario)
-                      //.where('estado', isEqualTo: 'activa') // 👉 ahora solo citas activas
+                      //.where('estado', isEqualTo: 'activa')
                       .orderBy('fecha', descending: true)
                       .snapshots(),
               builder: (context, snapshot) {
@@ -275,45 +287,72 @@ class Screen1 extends StatelessWidget {
                     final servicio = data['servicio'] ?? 'Sin servicio';
                     final horario = data['horario'] ?? 'Sin horario';
 
-                    return Card(
-                      color: const Color.fromARGB(255, 128, 128, 128),
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      child: ListTile(
-                        leading: Icon(icono, color: color),
-                        title: Text(
-                          "Servicio: $servicio",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                        subtitle: Text(
-                          fecha != null
-                              ? "Fecha: ${DateFormat('dd/MM/yyyy').format(fecha)}\nHorario: $horario"
-                              : "Horario: $horario",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                        trailing: Text(
-                          textoEstado,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: color,
-                            fontSize: 15,
-                          ),
-                        ),
-                        isThreeLine: true,
-                      ),
-                    );
+                   return Container(
+  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  decoration: BoxDecoration(
+    boxShadow: [
+      BoxShadow(
+        color :Colors.black.withOpacity(0.4),
+        blurRadius: 5,
+        spreadRadius: 0,
+        offset: Offset(4, 4),//DIRECCION SOMBRA x y
+      ),
+    ],
+    borderRadius: BorderRadius.circular(8),
+  ),
+  child: Card(
+    clipBehavior: Clip.antiAlias,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/bakgroundBelleza.jpg'),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(0.5),
+            BlendMode.darken,
+          ),
+        ),
+      ),
+      child: ListTile(
+        leading: Icon(icono, color: color),
+        title: Text(
+          "Servicio: $servicio",
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.normal,
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
+        subtitle: Text(
+          fecha != null
+              ? "Fecha: ${DateFormat('dd/MM/yyyy').format(fecha)}\nHorario: $horario"
+              : "Horario: $horario",
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.normal,
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
+        trailing: Text(
+          textoEstado,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: color,
+            fontSize: 15,
+          ),
+        ),
+        isThreeLine: true,
+      ),
+    ),
+  ),
+);
+
+
                   },
                 );
               },
@@ -409,11 +448,9 @@ class _Screen2State extends State<Screen2> {
                 onPressed: () async {
                   if (motivo.trim().isEmpty || citaSeleccionada == null) return;
 
-                  // Obtener datos de la cita
                   final citaData =
                       citaSeleccionada!.data() as Map<String, dynamic>;
 
-                  // 1. Guardar en colección de cancelaciones
                   await FirebaseFirestore.instance
                       .collection("cancelaciones_pendientes")
                       .add({
@@ -427,18 +464,15 @@ class _Screen2State extends State<Screen2> {
                         "solicitadoEl": Timestamp.now(),
                       });
 
-                  // 2. Eliminar la cita
                   await FirebaseFirestore.instance
                       .collection("agregar")
                       .doc(citaSeleccionada!.id);
 
-                  // 3. Refrescar lista
                   setState(() {
                     citas.remove(citaSeleccionada);
                     citaSeleccionada = null;
                   });
 
-                  // 4. Mostrar mensaje
                   Navigator.pop(context);
 
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -448,7 +482,7 @@ class _Screen2State extends State<Screen2> {
                   );
 
                   setState(() {
-                    citaSeleccionada = null; // Desmarcar la selección
+                    citaSeleccionada = null;
                   });
                 },
                 style: ElevatedButton.styleFrom(
@@ -475,13 +509,43 @@ class _Screen2State extends State<Screen2> {
     final servicio =
         data.containsKey('servicio') ? data['servicio'] : 'Sin servicio';
 
-    return Card(
-      color: const Color.fromARGB(255, 128, 128, 128),
-      margin: const EdgeInsets.symmetric(vertical: 8),
+    return Container(
+  margin: const EdgeInsets.symmetric(vertical: 8),
+  decoration: BoxDecoration(
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.4),
+        blurRadius: 5,
+        spreadRadius: 0,
+        offset: const Offset(5, 4),
+        
+      ),
+    ],
+    borderRadius: BorderRadius.circular(8),
+  ),
+  child: Card(
+    clipBehavior: Clip.antiAlias,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Container(
+      decoration: BoxDecoration(
+        image: const DecorationImage(
+          image: AssetImage('assets/backgroundChico.jpg'),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.black54,
+            BlendMode.darken,
+          ),
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: ListTile(
+        contentPadding: const EdgeInsets.all(12),
         leading: Checkbox(
-          checkColor: Colors.white,
-          activeColor: const Color.fromARGB(255, 219, 172, 31),
+          focusColor: Colors.black,
+          fillColor: WidgetStatePropertyAll(Colors.black),
+          checkColor: const Color.fromARGB(255, 219, 172, 31),
           value: seleccionada,
           onChanged: (value) {
             setState(() {
@@ -495,42 +559,45 @@ class _Screen2State extends State<Screen2> {
               TextSpan(
                 text: "Código de Cita : $codigo\n",
                 style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.normal,
                   fontSize: 18,
                 ),
               ),
               TextSpan(
-                text:
-                    "Fecha : ${fecha != null ? DateFormat('dd/MM/yyyy').format(fecha) : 'No disponible'}\n",
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.italic,
+                text: "Fecha : ${fecha != null ? DateFormat('dd/MM/yyyy').format(fecha) : 'No disponible'}\n",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.normal,
                   fontSize: 18,
                 ),
               ),
               TextSpan(
                 text: "Hora programada: $horario\n",
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.italic,
+                style: const TextStyle(
+                 fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.normal,
                   fontSize: 18,
                 ),
               ),
               TextSpan(
                 text: "Servicio : $servicio\n",
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.italic,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.normal,
                   fontSize: 18,
                 ),
               ),
             ],
           ),
-          style: const TextStyle(color: Colors.white, fontSize: 14),
+          style: const TextStyle(color: Colors.white),
         ),
       ),
-    );
+    ),
+  ),
+);
+
+
   }
 
   @override
@@ -546,10 +613,12 @@ class _Screen2State extends State<Screen2> {
               alignment: Alignment.topLeft,
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 73, 73, 73),
+                  color: Color.fromARGB(255, 0, 0, 0),
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(30),
                     bottomRight: Radius.circular(30),
+                    topLeft: Radius.circular(30),
+                    bottomLeft: Radius.circular(30)
                   ),
                 ),
                 child: const SizedBox(
@@ -561,7 +630,7 @@ class _Screen2State extends State<Screen2> {
                       style: TextStyle(
                         fontStyle: FontStyle.italic,
                         fontSize: 20,
-                        color: Colors.white,
+                        color: Color.fromARGB(255, 255, 255, 255),
                       ),
                     ),
                   ),
@@ -600,7 +669,7 @@ class _Screen2State extends State<Screen2> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: citaSeleccionada == null ? null : cancelarCitaConfirmada,
-        backgroundColor: const Color.fromARGB(255, 219, 172, 31),
+        backgroundColor: const Color.fromARGB(255, 224, 20, 20),
         icon: const Icon(Icons.cancel, color: Colors.black),
         label: const Text(
           "Cancelar Cita",
@@ -680,52 +749,65 @@ class _Screen3State extends State<Screen3> {
               String horarioActual = data['horario'] ?? 'No seleccionado';
 
               return Card(
-                color: const Color.fromARGB(255, 128, 128, 128),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                elevation: 6,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 16,
-                  ),
-                  title: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "Fecha : $fechaStr\n",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "Horario : $horarioActual\n",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "Servicios:\n- $servicioActual\n",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  trailing: const Icon(Icons.edit, color: Colors.amber),
-                  onTap:
-                      () => _mostrarDialogoModificacion(context, cita.id, data),
-                ),
-              );
+  clipBehavior: Clip.antiAlias,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(8),
+  ),
+  elevation: 6,
+  child: Container(
+    decoration: BoxDecoration(
+      image: const DecorationImage(
+        image: AssetImage('assets/spa.jpg'),
+        fit: BoxFit.cover,
+        colorFilter: ColorFilter.mode(
+          Colors.black54,
+          BlendMode.darken,
+        ),
+      ),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 16,
+      ),
+      title: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: "Fecha : $fechaStr\n",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.normal,
+                fontSize: 18,
+              ),
+            ),
+            TextSpan(
+              text: "Horario : $horarioActual\n",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.normal,
+                fontSize: 18,
+              ),
+            ),
+            TextSpan(
+              text: "Servicios:\n- $servicioActual\n",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.normal,
+                fontSize: 18,
+              ),
+            ),
+          ],
+        ),
+        style: const TextStyle(color: Colors.white),
+      ),
+      trailing: const Icon(Icons.edit, color: Colors.amber),
+      onTap: () => _mostrarDialogoModificacion(context, cita.id, data),
+    ),
+  ),
+);
+
             },
           );
         },
@@ -734,216 +816,292 @@ class _Screen3State extends State<Screen3> {
   }
 
   void _mostrarDialogoModificacion(
-    BuildContext context,
-    String citaId,
-    Map<String, dynamic> data,
-  ) {
-    DateTime selectedDate = DateTime.now();
-    if (data['fecha'] != null && data['fecha'] is Timestamp) {
-      selectedDate = (data['fecha'] as Timestamp).toDate();
-    }
+  BuildContext context,
+  String citaId,
+  Map<String, dynamic> data,
+) {
+  // Define serviciosPorCategoria dentro de la función o como variable global para evitar error "undefined"
+  final Map<String, List<Map<String, dynamic>>> serviciosPorCategoria = {
+    "TRATAMIENTOS FACIALES": [
+      {"nombre": "Limpieza facial profunda"},
+      {"nombre": "Limpieza facial basica"},
+    ],
+    "ESTÉTICA FACIAL": [
+      {"nombre": "Depilación de rostro (con cera)"},
+      {"nombre": "Visagismo de cejas y depilacion con cera"},
+      {"nombre": "Lifting de pestañas"},
+      {"nombre": "Laminado de cejas"},
+    ],
+    "MANICURE": [
+      {"nombre": "Esmaltado gel"},
+      {"nombre": "Esmaltado semipermanente"},
+      {"nombre": "Uñas poligel"},
+      {"nombre": "Uñas acrílicas"},
+      {"nombre": "Capping con acrilico"},
+      {"nombre": "Cromados y relieves"},
+      {"nombre": "Manicure francesa"},
+      {"nombre": "Efecto ojo de gato"},
+      {"nombre": "Efecto espejo"},
+      {"nombre": "Tecnica baby boomer"},
+      {"nombre": "Tecnica rubber"},
+      {"nombre": "Diseño tribal"},
+    ],
+    "MASAJES": [
+      {"nombre": "Masaje relajante y Aromaterapia"},
+      {"nombre": "Masoterapia... 1hr"},
+      {"nombre": "Masoterapia... 2hr"},
+    ],
+  };
 
-    String servicioSeleccionado =
-        data['servicio'] is String
-            ? data['servicio']
-            : (data['servicio'] is List && data['servicio'].isNotEmpty
-                ? data['servicio'][0]
-                : servicios.first);
+  DateTime selectedDate = DateTime.now();
+  if (data['fecha'] != null && data['fecha'] is Timestamp) {
+    selectedDate = (data['fecha'] as Timestamp).toDate();
+  }
 
-    String horarioSeleccionado = data['horario'] ?? horarios.first;
+  // Si tienes un array de servicios global, úsalo para el fallback
+  final List<String> servicios = serviciosPorCategoria.values
+      .expand((categoria) => categoria.map((s) => s['nombre'] as String))
+      .toList();
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setStateDialog) {
-            return AlertDialog(
-              title: const Text('Modificar cita'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Fecha
-                    Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 3,
-                      child: ListTile(
-                        title: const Text("Fecha"),
-                        subtitle: Text(
-                          DateFormat('dd/MM/yyyy').format(selectedDate),
-                        ),
-                        trailing: const Icon(Icons.calendar_today),
-                        onTap: () async {
-                          final picked = await showDatePicker(
-                            context: context,
-                            initialDate: selectedDate,
-                            firstDate: DateTime.now().subtract(
-                              const Duration(days: 365),
-                            ),
-                            lastDate: DateTime.now().add(
-                              const Duration(days: 365 * 2),
-                            ),
-                          );
-                          if (picked != null) {
-                            setStateDialog(() {
-                              selectedDate = picked;
-                            });
-                          }
-                        },
-                      ),
-                    ),
+  String servicioSeleccionado = data['servicio'] is String
+      ? data['servicio']
+      : (data['servicio'] is List && data['servicio'].isNotEmpty
+          ? data['servicio'][0]
+          : servicios.first);
 
-                    // Servicio
-                    Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Servicio",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Wrap(
-                              spacing: 8,
-                              children:
-                                  servicios.map((servicio) {
-                                    final isSelected =
-                                        servicioSeleccionado == servicio;
-                                    return ChoiceChip(
-                                      label: Text(servicio),
-                                      selected: isSelected,
-                                      onSelected: (_) {
-                                        setStateDialog(() {
-                                          servicioSeleccionado = servicio;
-                                        });
-                                      },
-                                    );
-                                  }).toList(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+  final List<String> horarios = ['08:00', '09:00', '10:00', '11:00']; // Ejemplo
+  String horarioSeleccionado = data['horario'] ?? horarios.first;
 
-                    // Horario
-                    Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Horario",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Wrap(
-                              spacing: 8,
-                              children:
-                                  horarios.map((hora) {
-                                    final isSelected =
-                                        horarioSeleccionado == hora;
-                                    return ChoiceChip(
-                                      label: Text(hora),
-                                      selected: isSelected,
-                                      onSelected: (_) {
-                                        setStateDialog(() {
-                                          horarioSeleccionado = hora;
-                                        });
-                                      },
-                                    );
-                                  }).toList(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setStateDialog) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Text(
+              'Modificar cita',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
               ),
-              actions: [
-                TextButton(
-                  child: const Text('Cancelar'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                ElevatedButton(
-                  child: const Text('Enviar solicitud'),
-                  onPressed: () async {
-                    try {
-                      bool cambioEnFecha =
-                          data['fecha'] is Timestamp &&
-                          (data['fecha'] as Timestamp).toDate() != selectedDate;
-                      bool cambioEnHorario =
-                          data['horario'] != horarioSeleccionado;
-                      bool cambioEnServicio =
-                          data['servicio'] != servicioSeleccionado;
-
-                      if (!cambioEnFecha &&
-                          !cambioEnHorario &&
-                          !cambioEnServicio) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('No has realizado ningún cambio.'),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Fecha
+                  Card(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 4,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      title: const Text(
+                        "Fecha",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        DateFormat('dd/MM/yyyy').format(selectedDate),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      trailing: const Icon(Icons.calendar_today),
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate,
+                          firstDate: DateTime.now().subtract(
+                            const Duration(days: 365),
+                          ),
+                          lastDate: DateTime.now().add(
+                            const Duration(days: 365 * 2),
                           ),
                         );
-                        return;
-                      }
-
-                      await FirebaseFirestore.instance
-                          .collection('solicitudes_modificacion')
-                          .add({
-                            'citaId': citaId,
-                            'usuario': widget.usuario,
-                            'nuevaFecha': Timestamp.fromDate(selectedDate),
-                            'nuevoHorario': horarioSeleccionado,
-                            'nuevoServicio': servicioSeleccionado,
-                            'estado': 'pendiente',
-                            'creado': Timestamp.now(),
+                        if (picked != null) {
+                          setStateDialog(() {
+                            selectedDate = picked;
                           });
+                        }
+                      },
+                    ),
+                  ),
 
-                      Navigator.of(context).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Solicitud enviada al administrador.'),
-                        ),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Error al enviar solicitud: $e'),
-                        ),
-                      );
-                    }
-                  },
+                  // Servicio
+                  Card(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Servicio",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              for (var categoria in serviciosPorCategoria.values)
+                                for (var servicio in categoria)
+                                  ChoiceChip(
+                                    label: Text(servicio['nombre']),
+                                    selected:
+                                        servicioSeleccionado == servicio['nombre'],
+                                    selectedColor: const Color(0xFFFFD700),
+                                    backgroundColor: Colors.grey.shade200,
+                                    labelStyle: TextStyle(
+                                      color: servicioSeleccionado ==
+                                              servicio['nombre']
+                                          ? Colors.black
+                                          : Colors.black87,
+                                    ),
+                                    onSelected: (_) {
+                                      setStateDialog(() {
+                                        servicioSeleccionado = servicio['nombre'];
+                                      });
+                                    },
+                                  ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Horario
+                  Card(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Horario",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: horarios.map((horario) {
+                              final isSelected = horarioSeleccionado == horario;
+                              return ChoiceChip(
+                                label: Text(horario),
+                                selected: isSelected,
+                                selectedColor: const Color(0xFFFFD700),
+                                backgroundColor: Colors.grey.shade200,
+                                labelStyle: TextStyle(
+                                  color: isSelected ? Colors.black : Colors.black87,
+                                ),
+                                onSelected: (_) {
+                                  setStateDialog(() {
+                                    horarioSeleccionado = horario;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.grey.shade300,
                 ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+                child: const Text('Cancelar'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFD700),
+                ),
+                child: const Text('Enviar solicitud'),
+                onPressed: () async {
+                try {
+                  bool cambioEnFecha =
+                      data['fecha'] is Timestamp &&
+                      (data['fecha'] as Timestamp).toDate() != selectedDate;
+                  bool cambioEnHorario =
+                      data['horario'] != horarioSeleccionado;
+                  bool cambioEnServicio =
+                      data['servicio'] != servicioSeleccionado;
+
+                  if (!cambioEnFecha &&
+                      !cambioEnHorario &&
+                      !cambioEnServicio) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No has realizado ningún cambio.'),
+                      ),
+                    );
+                    return;
+                  }
+
+                  await FirebaseFirestore.instance
+                      .collection('solicitudes_modificacion')
+                      .add({
+                        'citaId': citaId,
+                        'usuario': widget.usuario,
+                        'nuevaFecha': Timestamp.fromDate(selectedDate),
+                        'nuevoHorario': horarioSeleccionado,
+                        'nuevoServicio': servicioSeleccionado,
+                        'estado': 'pendiente',
+                        'creado': Timestamp.now(),
+                      });
+
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content:
+                          Text('Solicitud enviada al administrador.'),
+                    ),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error al enviar solicitud: $e'),
+                    ),
+                  );
+                }
+              },
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
 }
 
 class Screen4 extends StatelessWidget {
@@ -993,8 +1151,8 @@ class Screen4 extends StatelessWidget {
               final ahora = DateTime.now();
               final estadoPendiente = fecha.isAfter(ahora);
               final icono =
-                  estadoPendiente ? Icons.notifications : Icons.check_circle;
-              final color = estadoPendiente ? Colors.blue : Colors.green;
+                  estadoPendiente ? Icons.notifications : Icons.cancel;
+              final color = estadoPendiente ? Colors.blue : Colors.red;
               final textoEstado = estadoPendiente ? 'Próxima' : 'Pasada';
 
               final codigo = data['codigo'] ?? 'Sin código';
@@ -1002,7 +1160,7 @@ class Screen4 extends StatelessWidget {
               final horario = data['horario'] ?? 'Sin horario';
 
               return Card(
-                color: const Color.fromARGB(255, 128, 128, 128),
+                color: const Color.fromARGB(120, 0, 0, 0),
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: ListTile(
                   leading: Icon(icono, color: color),
@@ -1025,18 +1183,19 @@ class Screen4 extends StatelessWidget {
                     ),
                   ),
                   trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        textoEstado,
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    Text(
+      textoEstado,
+      style: TextStyle(
+        color: estadoPendiente ? Colors.blue : Colors.red, // aquí la corrección
+        fontSize: 15,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  ],
+),
+
                   isThreeLine: true,
                 ),
               );

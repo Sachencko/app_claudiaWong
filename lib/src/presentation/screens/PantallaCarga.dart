@@ -1,6 +1,24 @@
+/*
+
+ ____   _    _   _ _____  _    _     _        _      ____  _____ 
+|  _ \ / \  | \ | |_   _|/ \  | |   | |      / \    |  _ \| ____|
+| |_) / _ \ |  \| | | | / _ \ | |   | |     / _ \   | | | |  _|  
+|  __/ ___ \| |\  | | |/ ___ \| |___| |___ / ___ \  | |_| | |___ 
+|_|_/_/   \_\_|_\_| |_/_/_  \_\_____|_____/_/___\_\ |____/|_____|
+ / ___|  / \  |  _ \ / ___|  / \    |  _ \| ____|                
+| |     / _ \ | |_) | |  _  / _ \   | | | |  _|                  
+| |___ / ___ \|  _ <| |_| |/ ___ \  | |_| | |___                 
+ \____/_/_ _\_\_|_\_\\____/_/   \_\ |____/|_____|                
+|_ _| \ | |_ _/ ___|_ _/ _ \                                     
+ | ||  \| || | |    | | | | |                                    
+ | || |\  || | |___ | | |_| |                                    
+|___|_| \_|___\____|___\___/                                     
+
+*/
+
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'login.dart'; // importa tu pantalla de login aquí
+import 'login.dart';
 
 class PantallaCarga extends StatefulWidget {
   @override
@@ -8,16 +26,14 @@ class PantallaCarga extends StatefulWidget {
 }
 
 class _PantallaCargaState extends State<PantallaCarga> {
-
   @override
   void initState() {
     super.initState();
-
-    // Espera 3 segundos y luego navega a login
     Timer(Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => Login()),
-      );
+      //TEMPORIZADOR para que navegue al login
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (_) => Login()));
     });
   }
 
@@ -36,10 +52,10 @@ class _PantallaCargaState extends State<PantallaCarga> {
               fit: BoxFit.contain,
             ),
 
-
-
             CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 201, 182, 76)), // dorado
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Color.fromARGB(255, 201, 182, 76),
+              ), // dorado
               strokeWidth: 3,
             ),
 

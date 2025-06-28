@@ -225,7 +225,6 @@ class _AgregarState extends State<Agregar> {
       );
     });
 
-    // Esperar a que se construya el widget y luego hacer scroll con animación
     await Future.delayed(const Duration(milliseconds: 300));
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
@@ -285,11 +284,13 @@ class _AgregarState extends State<Agregar> {
     List<Map<String, dynamic>> servicios,
   ) {
     return ExpansionTile(
-      backgroundColor: const Color.fromARGB(255, 240, 222, 190),
-      collapsedBackgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(193, 107, 107, 107),
+      collapsedIconColor: Colors.white,
+      iconColor: Colors.white,
+      collapsedBackgroundColor: const Color.fromARGB(255, 107, 107, 107),
       title: Text(
         categoria,
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
       children:
           servicios.map((servicio) {
@@ -298,8 +299,8 @@ class _AgregarState extends State<Agregar> {
             );
             return ListTile(
               leading: Image.asset(servicio['img'], width: 40, height: 40),
-              title: Text(servicio['nombre']),
-              subtitle: Text("S/. ${servicio['precio']}"),
+              title: Text(servicio['nombre'], style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255), fontStyle: FontStyle.italic),),
+              subtitle: Text("S/. ${servicio['precio']}", style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255), fontStyle: FontStyle.italic),),
               trailing: Checkbox(
                 activeColor: const Color.fromARGB(255, 206, 172, 69),
                 value: seleccionado,
@@ -327,8 +328,9 @@ class _AgregarState extends State<Agregar> {
           padding: const EdgeInsets.all(12),
           children: [
             ListTile(
-              title: const Text("Seleccionar Fecha"),
+              title: const Text("Selecciona la Fecha de tu Cita", style: TextStyle(fontWeight: FontWeight.bold , fontSize: 18),),
               subtitle: Text(
+                style: TextStyle(fontWeight: FontWeight.bold , fontSize: 18),
                 fechaSeleccionada != null
                     ? DateFormat('dd/MM/yyyy').format(fechaSeleccionada!)
                     : "No seleccionada",
@@ -339,7 +341,7 @@ class _AgregarState extends State<Agregar> {
             const SizedBox(height: 10),
             const Text(
               "Seleccionar Horario",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold , fontSize: 18),
             ),
             const SizedBox(height: 10),
             Wrap(
@@ -349,7 +351,7 @@ class _AgregarState extends State<Agregar> {
                     return ChoiceChip(
                       label: Text(
                         h,
-                        style: const TextStyle(color: Colors.black),
+                        style: const TextStyle(fontWeight: FontWeight.bold , fontSize: 18, color: Colors.black),
                       ),
                       selected: horarioSeleccionado == h,
                       selectedColor: const Color.fromARGB(255, 204, 173, 48),
@@ -373,18 +375,19 @@ class _AgregarState extends State<Agregar> {
             if (mostrarConfirmacion) ...[
               const SizedBox(height: 20),
               const Text(
-                "Para separar tu cita es necesario realizar un adelanto de S/.10",
+                "Para separar tu cita es necesario pagar:",
                 style: TextStyle(
-                  color: Colors.red,
+                  color: Color.fromARGB(255, 212, 65, 55),
                   fontWeight: FontWeight.bold,
+                  fontSize: 18
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Container(
                 key: _pagoKey,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.purple.shade100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -392,7 +395,7 @@ class _AgregarState extends State<Agregar> {
                   children: [
                     const Text(
                       "SERVICIOS SELECCIONADOS",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     const SizedBox(height: 8),
                     ...serviciosPorCategoria.entries.expand((entry) {
@@ -407,8 +410,8 @@ class _AgregarState extends State<Agregar> {
                               padding: const EdgeInsets.symmetric(vertical: 2),
                               child: Row(
                                 children: [
-                                  Expanded(child: Text("- ${s['nombre']}")),
-                                  Text("S/. ${s['precio']}"),
+                                  Expanded(child: Text("- ${s['nombre']}", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),)),
+                                  Text("S/. ${s['precio']}", style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),),
                                 ],
                               ),
                             );
@@ -416,19 +419,20 @@ class _AgregarState extends State<Agregar> {
                     }).toList(),
                     const SizedBox(height: 10),
                     Text(
-                      "Total a pagar: S/. $total",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      "TOTAL A PAGAR: S/. $total",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Image.asset("assets/yape.jpg", width: 200),
                     const Text(
                       "CLAUDIA WONG ARIAS\n987654321",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
-                        labelText: "Confirmación de pago",
+                        labelText: "Confirmar pago",
                       ),
                       value: tipoPago.isEmpty ? null : tipoPago,
                       items: const [
@@ -436,11 +440,12 @@ class _AgregarState extends State<Agregar> {
                           value: "adelanto",
                           child: Text(
                             "Pago por adelanto - reserva de cita (S/10)",
+                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ),
                         DropdownMenuItem(
                           value: "completo",
-                          child: Text("Pago por servicio completo"),
+                          child: Text("Pago por servicio completo",  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                         ),
                       ],
                       onChanged: (value) {
@@ -456,7 +461,7 @@ class _AgregarState extends State<Agregar> {
                           pagoConfirmado = value ?? false;
                         });
                       },
-                      title: const Text("He realizado el pago"),
+                      title: const Text("Verificación de pago",  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     ),
                     const SizedBox(height: 10),
                     SizedBox(
@@ -484,7 +489,7 @@ class _AgregarState extends State<Agregar> {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.black,
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(vertical: 20),
           ),
           onPressed: mostrarConfirmacion ? null : irAPago,
           child: const Text(

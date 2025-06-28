@@ -3,11 +3,9 @@ import 'package:claudia_wong_app/src/presentation/screens/pantallaPrincipal.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// Asumo que tu pantalla principal se llama PantallaPrincipal y recibe un usuario String
-
 class Noti extends StatefulWidget {
   final int codigo;
-  final String usuario;  // Añadimos usuario
+  final String usuario;
 
   const Noti({super.key, required this.codigo, required this.usuario});
 
@@ -23,9 +21,9 @@ class _NotiState extends State<Noti> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => pantallaPrincipal(usuario: widget.usuario), // Pasamos el usuario
+          builder: (context) => pantallaPrincipal(usuario: widget.usuario),
         ),
-        (route) => false,  // Elimina toda la pila para que esta sea la nueva raíz
+        (route) => false,
       );
     });
   }
@@ -58,7 +56,11 @@ class _NotiState extends State<Noti> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.check_circle_outline, color: Colors.blue, size: 30),
+                  const Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.blue,
+                    size: 30,
+                  ),
                   const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,11 +80,21 @@ class _NotiState extends State<Noti> {
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.copy, size: 18, color: Colors.blueAccent),
+                            icon: const Icon(
+                              Icons.copy,
+                              size: 18,
+                              color: Colors.blueAccent,
+                            ),
                             onPressed: () {
-                              Clipboard.setData(ClipboardData(text: "${widget.codigo}"));
+                              Clipboard.setData(
+                                ClipboardData(text: "${widget.codigo}"),
+                              );
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Código copiado al portapapeles')),
+                                const SnackBar(
+                                  content: Text(
+                                    'Código copiado al portapapeles',
+                                  ),
+                                ),
                               );
                             },
                           ),

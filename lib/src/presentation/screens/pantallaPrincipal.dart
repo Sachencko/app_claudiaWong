@@ -896,7 +896,7 @@ class _Screen3State extends State<Screen3> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Fecha
+                    //FECHA
                     Card(
                       margin: const EdgeInsets.symmetric(vertical: 10),
                       shape: RoundedRectangleBorder(
@@ -937,62 +937,7 @@ class _Screen3State extends State<Screen3> {
                       ),
                     ),
 
-                    // Servicio
-                    Card(
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Servicio",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: [
-                                for (var categoria
-                                    in serviciosPorCategoria.values)
-                                  for (var servicio in categoria)
-                                    ChoiceChip(
-                                      label: Text(servicio['nombre']),
-                                      selected:
-                                          servicioSeleccionado ==
-                                          servicio['nombre'],
-                                      selectedColor: const Color(0xFFFFD700),
-                                      backgroundColor: Colors.grey.shade200,
-                                      labelStyle: TextStyle(
-                                        color:
-                                            servicioSeleccionado ==
-                                                    servicio['nombre']
-                                                ? Colors.black
-                                                : Colors.black87,
-                                      ),
-                                      onSelected: (_) {
-                                        setStateDialog(() {
-                                          servicioSeleccionado =
-                                              servicio['nombre'];
-                                        });
-                                      },
-                                    ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // Horario
+                    //HORARIO
                     Card(
                       margin: const EdgeInsets.symmetric(vertical: 10),
                       shape: RoundedRectangleBorder(
@@ -1071,12 +1016,7 @@ class _Screen3State extends State<Screen3> {
                           (data['fecha'] as Timestamp).toDate() != selectedDate;
                       bool cambioEnHorario =
                           data['horario'] != horarioSeleccionado;
-                      bool cambioEnServicio =
-                          data['servicio'] != servicioSeleccionado;
-
-                      if (!cambioEnFecha &&
-                          !cambioEnHorario &&
-                          !cambioEnServicio) {
+                      if (!cambioEnFecha && !cambioEnHorario) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('No has realizado ningún cambio.'),
@@ -1092,7 +1032,6 @@ class _Screen3State extends State<Screen3> {
                             'usuario': widget.usuario,
                             'nuevaFecha': Timestamp.fromDate(selectedDate),
                             'nuevoHorario': horarioSeleccionado,
-                            'nuevoServicio': servicioSeleccionado,
                             'estado': 'pendiente',
                             'creado': Timestamp.now(),
                           });
@@ -1222,49 +1161,78 @@ class Screen4 extends StatelessWidget {
   }
 }
 
-class Screen5 extends StatelessWidget {
+//MAPA
+class Screen5 extends StatefulWidget {
   const Screen5({super.key, required this.usuario});
   final String usuario;
 
   @override
-  Widget build(BuildContext context) {
-    final LatLng target = LatLng(-13.418937843522185, -76.13454396816157);
+  State<Screen5> createState() => _Screen5State();
+}
 
+class _Screen5State extends State<Screen5> {
+  final MapController _mapController = MapController();
+  final LatLng target = LatLng(-13.418937843522185, -76.13454396816157);
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 215, 186),
-      body: Column(
+      body: Stack(
         children: [
-          // Mapa
-          Expanded(
+          Positioned.fill(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: FlutterMap(
-                  options: MapOptions(center: target, zoom: 15.0),
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                      subdomains: ['a', 'b', 'c'],
-                      userAgentPackageName: 'com.example.app',
-                    ),
-                    MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: target,
-                          width: 80,
-                          height: 80,
-                          child: const Icon(
-                            Icons.location_pin,
-                            color: Colors.red,
-                            size: 40,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 2),
+                  borderRadius: BorderRadius.circular(15),
                 ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(13),
+                  child: FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(center: target, zoom: 15.0),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        subdomains: ['a', 'b', 'c'],
+                        userAgentPackageName: 'com.example.app',
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: target,
+                            width: 80,
+                            height: 80,
+                            child: const Icon(
+                              Icons.location_pin,
+                              color: Colors.red,
+                              size: 40,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          Positioned(
+            bottom: 30,
+            right: 30,
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                _mapController.move(target, 15.0);
+              },
+              backgroundColor: Colors.black,
+              icon: const Icon(Icons.my_location, color: Colors.white),
+              label: const Text(
+                "Volver al local",
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),

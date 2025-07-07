@@ -135,36 +135,39 @@ class _AgregarState extends State<Agregar> {
   }
 
   void toggleServicio(String categoria, String nombre) {
-    final totalSeleccionados = serviciosSeleccionados.values.fold(
-      0,
-      (sum, set) => sum + set.length,
-    );
+  setState(() {
+    if (serviciosSeleccionados[categoria]!.contains(nombre)) {
+      serviciosSeleccionados[categoria]!.remove(nombre);
+    } else {
+      serviciosSeleccionados[categoria]!.add(nombre);
+    }
+    // Actualiza total en tiempo real
+    actualizarTotal();
+  });
+}
 
-    setState(() {
-      if (serviciosSeleccionados[categoria]!.contains(nombre)) {
-        serviciosSeleccionados[categoria]!.remove(nombre);
-      } else {
-        if (totalSeleccionados >= maxServiciosPermitidos) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                "Solo puedes seleccionar hasta $maxServiciosPermitidos servicios.",
-              ),
-            ),
-          );
-          return;
-        }
-        serviciosSeleccionados[categoria]!.add(nombre);
+void actualizarTotal() {
+  final seleccionFinal = <Map<String, dynamic>>[];
+
+  serviciosPorCategoria.forEach((categoria, servicios) {
+    for (var servicio in servicios) {
+      if (serviciosSeleccionados[categoria]!.contains(servicio['nombre'])) {
+        seleccionFinal.add(servicio);
       }
-    });
-  }
+    }
+  });
 
+  total = seleccionFinal.fold(0, (sum, item) => sum + (item['precio'] as int));
+}
   void seleccionarFecha() async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 365)),
+      lastDate: DateTime(DateTime.now().year, 12, 31),
+      selectableDayPredicate: (DateTime date) {
+        return date.weekday != DateTime.sunday;
+      },
     );
 
     if (picked != null) {

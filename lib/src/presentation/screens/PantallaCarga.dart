@@ -55,7 +55,7 @@ class _PantallaCargaState extends State<PantallaCarga> {
             CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(
                 Color.fromARGB(255, 201, 182, 76),
-              ), // dorado
+              ),
               strokeWidth: 3,
             ),
 
@@ -64,7 +64,7 @@ class _PantallaCargaState extends State<PantallaCarga> {
             Text(
               'Espere un momento...',
               style: TextStyle(
-                color: const Color.fromARGB(255, 199, 166, 68), // dorado
+                color: const Color.fromARGB(255, 199, 166, 68),
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
               ),
